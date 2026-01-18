@@ -109,13 +109,14 @@ const Checkout = () => {
       const response = await axios.post(`${API}/orders`, orderData);
       
       toast.success('Siparişiniz alındı!', {
-        description: 'Sipariş takip sayfasına yönlendiriliyorsunuz...',
+        description: `Sipariş Kodu: ${response.data.order_code}`,
+        duration: 5000,
       });
       
       clearCart();
       setTimeout(() => {
-        navigate(`/order/${response.data.id}`);
-      }, 1500);
+        navigate(`/order/${response.data.order_code}`);
+      }, 2000);
     } catch (error) {
       console.error('Order error:', error);
       toast.error('Sipariş oluşturulurken hata oluştu', {
