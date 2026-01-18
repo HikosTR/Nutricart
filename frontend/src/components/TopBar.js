@@ -23,7 +23,7 @@ const TopBar = () => {
   };
 
   return (
-    <div className="bg-[#78BE20] text-black py-2 text-center text-sm font-medium">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-[#78BE20] text-black py-2 text-center text-sm font-medium">
       {message}
     </div>
   );

@@ -31,7 +31,7 @@ const Navbar = () => {
   return (
     <motion.nav
       data-testid="main-navbar"
-      className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100"
+      className="fixed top-[36px] left-0 right-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
