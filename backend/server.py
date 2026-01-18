@@ -451,6 +451,41 @@ async def delete_testimonial(testimonial_id: str, admin: dict = Depends(get_curr
         raise HTTPException(status_code=404, detail="Testimonial not found")
     return {"message": "Testimonial deleted"}
 
+# Payment Settings Routes
+@api_router.get("/payment-settings", response_model=PaymentSettings)
+async def get_payment_settings():
+    settings = await db.payment_settings.find_one({"id": "payment_settings"}, {"_id": 0})
+    if not settings:
+        default_settings = PaymentSettings(
+            account_holder_name="Herbalife Türkiye",
+            iban="TR00 0000 0000 0000 0000 0000 00",
+            bank_name="Banka Adı"
+        )
+        doc = default_settings.model_dump()
+        doc['updated_at'] = doc['updated_at'].isoformat()
+        await db.payment_settings.insert_one(doc)
+        return default_settings
+    if isinstance(settings.get('updated_at'), str):
+        settings['updated_at'] = datetime.fromisoformat(settings['updated_at'])
+    return settings
+
+@api_router.put("/payment-settings", response_model=PaymentSettings)
+async def update_payment_settings(input: PaymentSettingsUpdate, admin: dict = Depends(get_current_admin)):
+    settings = PaymentSettings(**input.model_dump(), id="payment_settings")
+    doc = settings.model_dump()
+    doc['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.payment_settings.update_one(
+        {"id": "payment_settings"},
+        {"$set": doc},
+        upsert=True
+    )
+    
+    updated = await db.payment_settings.find_one({"id": "payment_settings"}, {"_id": 0})
+    if isinstance(updated.get('updated_at'), str):
+        updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
+    return updated
+
 app.include_router(api_router)
 
 app.add_middleware(
