@@ -109,11 +109,15 @@ const ProductDetail = () => {
             >
               <div className="sticky top-32">
                 <div className="relative rounded-3xl overflow-hidden bg-gray-50">
-                  <img
-                    src={product.image_url}
+                  <motion.img
+                    key={getCurrentImage()}
+                    src={getCurrentImage()}
                     alt={product.name}
                     className="w-full h-[500px] object-cover"
                     data-testid="product-detail-image"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
                   />
                   {product.is_package && (
                     <div className="absolute top-6 right-6 bg-[#78BE20] text-white px-4 py-2 rounded-full font-bold flex items-center space-x-2">
