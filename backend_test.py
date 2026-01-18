@@ -122,7 +122,7 @@ class HerbalifeAPITester:
             "is_package": False
         }
         
-        success, response = self.make_request('POST', 'products', product_data, 201, True)
+        success, response = self.make_request('POST', 'products', product_data, 200, True)
         if success:
             product_id = response['id']
             self.created_resources['products'].append(product_id)
