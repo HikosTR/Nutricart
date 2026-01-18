@@ -341,9 +341,18 @@ const ProductsManagement = () => {
                     <div className="space-y-2 mb-4">
                       {formData.variants.map((variant, index) => (
                         <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
-                          <div>
-                            <span className="font-medium">{variant.name}</span>
-                            <span className="text-sm text-gray-500 ml-3">Stok: {variant.stock}</span>
+                          <div className="flex items-center space-x-3">
+                            {variant.image_url && (
+                              <img 
+                                src={variant.image_url} 
+                                alt={variant.name}
+                                className="w-12 h-12 object-cover rounded-lg"
+                              />
+                            )}
+                            <div>
+                              <span className="font-medium">{variant.name}</span>
+                              <span className="text-sm text-gray-500 ml-3">Stok: {variant.stock}</span>
+                            </div>
                           </div>
                           <button
                             type="button"
@@ -356,20 +365,29 @@ const ProductsManagement = () => {
                       ))}
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-3 gap-2">
+                        <input
+                          type="text"
+                          value={newVariantName}
+                          onChange={(e) => setNewVariantName(e.target.value)}
+                          placeholder="Varyant adı (ör: Çikolata)"
+                          className="col-span-2 h-10 rounded-lg border-gray-200 px-3 text-sm"
+                        />
+                        <input
+                          type="number"
+                          value={newVariantStock}
+                          onChange={(e) => setNewVariantStock(e.target.value)}
+                          placeholder="Stok"
+                          className="h-10 rounded-lg border-gray-200 px-3 text-sm"
+                        />
+                      </div>
                       <input
-                        type="text"
-                        value={newVariantName}
-                        onChange={(e) => setNewVariantName(e.target.value)}
-                        placeholder="Varyant adı (ör: Çikolata)"
-                        className="col-span-2 h-10 rounded-lg border-gray-200 px-3 text-sm"
-                      />
-                      <input
-                        type="number"
-                        value={newVariantStock}
-                        onChange={(e) => setNewVariantStock(e.target.value)}
-                        placeholder="Stok"
-                        className="h-10 rounded-lg border-gray-200 px-3 text-sm"
+                        type="url"
+                        value={newVariantImage}
+                        onChange={(e) => setNewVariantImage(e.target.value)}
+                        placeholder="Görsel URL (opsiyonel)"
+                        className="w-full h-10 rounded-lg border-gray-200 px-3 text-sm"
                       />
                     </div>
                     <button
