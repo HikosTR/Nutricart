@@ -226,6 +226,24 @@ const Checkout = () => {
                         Ödeme için kullanacağınız IBAN numarasını girin
                       </p>
                     </div>
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Ödeme Dekontu (Görsel URL) *
+                      </label>
+                      <input
+                        type="url"
+                        name="receipt_image_url"
+                        value={formData.receipt_image_url}
+                        onChange={handleChange}
+                        required
+                        className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 bg-white px-4"
+                        placeholder="https://example.com/dekont.jpg"
+                        data-testid="receipt-image-input"
+                      />
+                      <p className="text-xs text-gray-500 mt-2">
+                        Ödeme dekontunuzun görsel URL'sini girin (ImgBB, Imgur vb. kullanabilirsiniz)
+                      </p>
+                    </div>
                   </div>
                 </div>
 
