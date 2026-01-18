@@ -191,6 +191,23 @@ const Checkout = () => {
                       Sipariş tamamlandıktan sonra, aşağıdaki IBAN’a ödemenizi yapabilirsiniz.
                     </p>
                     
+                    {paymentSettings && (
+                      <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                        <p className="text-xs text-gray-500 mb-1">Hesap Sahibi</p>
+                        <p className="font-bold text-gray-900 mb-3">{paymentSettings.account_holder_name}</p>
+                        
+                        <p className="text-xs text-gray-500 mb-1">IBAN</p>
+                        <p className="font-mono font-bold text-gray-900 mb-3">{paymentSettings.iban}</p>
+                        
+                        {paymentSettings.bank_name && (
+                          <>
+                            <p className="text-xs text-gray-500 mb-1">Banka</p>
+                            <p className="font-bold text-gray-900">{paymentSettings.bank_name}</p>
+                          </>
+                        )}
+                      </div>
+                    )}
+                    
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         IBAN Numaranız *
