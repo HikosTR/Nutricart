@@ -14,13 +14,28 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { cart, getCartTotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
+  const [paymentSettings, setPaymentSettings] = useState(null);
   const [formData, setFormData] = useState({
     customer_name: '',
     customer_email: '',
     customer_phone: '',
     customer_address: '',
     customer_iban: '',
+    receipt_image_url: '',
   });
+
+  useEffect(() => {
+    fetchPaymentSettings();
+  }, []);
+
+  const fetchPaymentSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/payment-settings`);
+      setPaymentSettings(response.data);
+    } catch (error) {
+      console.error('Error fetching payment settings:', error);
+    }
+  };
 
   if (cart.length === 0) {
     navigate('/cart');
