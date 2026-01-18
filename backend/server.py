@@ -49,6 +49,10 @@ class Token(BaseModel):
     token: str
     token_type: str = "bearer"
 
+class ProductVariant(BaseModel):
+    name: str
+    stock: int = 100
+
 class Product(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -59,6 +63,8 @@ class Product(BaseModel):
     category: str
     stock: int = 100
     is_package: bool = False
+    has_variants: bool = False
+    variants: Optional[List[ProductVariant]] = []
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ProductCreate(BaseModel):
@@ -69,6 +75,8 @@ class ProductCreate(BaseModel):
     category: str
     stock: int = 100
     is_package: bool = False
+    has_variants: bool = False
+    variants: Optional[List[ProductVariant]] = []
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
@@ -78,6 +86,8 @@ class ProductUpdate(BaseModel):
     category: Optional[str] = None
     stock: Optional[int] = None
     is_package: Optional[bool] = None
+    has_variants: Optional[bool] = None
+    variants: Optional[List[ProductVariant]] = None
 
 class Video(BaseModel):
     model_config = ConfigDict(extra="ignore")
