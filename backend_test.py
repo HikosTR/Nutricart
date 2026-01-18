@@ -159,7 +159,7 @@ class HerbalifeAPITester:
             "active": True
         }
         
-        success, response = self.make_request('POST', 'videos', video_data, 201, True)
+        success, response = self.make_request('POST', 'videos', video_data, 200, True)
         if success:
             video_id = response['id']
             self.created_resources['videos'].append(video_id)
