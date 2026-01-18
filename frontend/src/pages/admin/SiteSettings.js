@@ -26,6 +26,10 @@ const SiteSettings = () => {
       const response = await axios.get(`${API}/site-settings`);
       setFormData({
         logo_url: response.data.logo_url,
+        topbar_message: response.data.topbar_message || '',
+        footer_about: response.data.footer_about || '',
+        footer_phone: response.data.footer_phone || '',
+        footer_email: response.data.footer_email || '',
       });
     } catch (error) {
       console.error('Error fetching settings:', error);
