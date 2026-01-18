@@ -40,11 +40,21 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           <Link to="/" className="flex items-center space-x-3 group">
             <motion.div
-              className="text-3xl font-black tracking-tighter"
               whileHover={{ scale: 1.05 }}
             >
-              <span className="text-[#78BE20]">Herba</span>
-              <span className="text-black">Life</span>
+              <img 
+                src={logoUrl} 
+                alt="HerbaLife Logo" 
+                className="h-12 object-contain"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
+              />
+              <div className="text-3xl font-black tracking-tighter" style={{ display: 'none' }}>
+                <span className="text-[#78BE20]">Herba</span>
+                <span className="text-black">Life</span>
+              </div>
             </motion.div>
           </Link>
 
