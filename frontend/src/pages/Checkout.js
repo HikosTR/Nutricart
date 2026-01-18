@@ -188,7 +188,7 @@ const Checkout = () => {
                   <div className="bg-white rounded-xl p-6 border-2 border-[#78BE20]">
                     <p className="text-sm text-gray-600 mb-4">
                       Ödeme yöntemi olarak <span className="font-bold text-[#78BE20]">Banka Havalesi / EFT</span> kullanmaktayız.
-                      Sipariş tamamlandıktan sonra, aşağıdaki IBAN’a ödemenizi yapabilirsiniz.
+                      Lütfen ödemenizi aşağıdaki hesaba yapın ve dekont görselini yükleyin.
                     </p>
                     
                     {paymentSettings && (
