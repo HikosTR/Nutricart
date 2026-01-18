@@ -73,6 +73,13 @@ const Navbar = () => {
             >
               Ürünler
             </a>
+            <Link
+              to="/track-order"
+              data-testid="nav-track-order-link"
+              className="text-gray-700 hover:text-[#78BE20] font-medium transition-colors duration-200"
+            >
+              Sipariş Takip
+            </Link>
             <a
               href="#testimonials"
               data-testid="nav-testimonials-link"
