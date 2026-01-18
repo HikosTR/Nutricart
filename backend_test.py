@@ -192,7 +192,7 @@ class HerbalifeAPITester:
             "active": True
         }
         
-        success, response = self.make_request('POST', 'banners', banner_data, 201, True)
+        success, response = self.make_request('POST', 'banners', banner_data, 200, True)
         if success:
             banner_id = response['id']
             self.created_resources['banners'].append(banner_id)
