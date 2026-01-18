@@ -192,6 +192,15 @@ class PaymentSettingsUpdate(BaseModel):
     iban: str
     bank_name: Optional[str] = None
 
+class SiteSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = "site_settings"
+    logo_url: str = "https://customer-assets.emergentagent.com/job_herbalife-shop-3/artifacts/51go848j_Ekran%20Resmi%202026-01-18%2004.46.44.png"
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class SiteSettingsUpdate(BaseModel):
+    logo_url: str
+
 # Auth helpers
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
