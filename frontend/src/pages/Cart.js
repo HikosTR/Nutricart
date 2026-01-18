@@ -62,62 +62,75 @@ const Cart = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-4">
-              {cart.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-all duration-300"
-                  data-testid={`cart-item-${index}`}
-                >
-                  <div className="flex items-center space-x-6">
-                    <img
-                      src={item.image_url}
-                      alt={item.name}
-                      className="w-24 h-24 object-cover rounded-xl"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg text-gray-900 mb-1">{item.name}</h3>
-                      <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
+              {cart.map((item, index) => {
+                const cartId = item.selectedVariant 
+                  ? `${item.id}-${item.selectedVariant}` 
+                  : item.id;
+                
+                return (
+                  <motion.div
+                    key={cartId}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-all duration-300"
+                    data-testid={`cart-item-${index}`}
+                  >
+                    <div className="flex items-center space-x-6">
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        className="w-24 h-24 object-cover rounded-xl"
+                      />
+                      <div className="flex-1">
+                        <h3 className="font-bold text-lg text-gray-900 mb-1">{item.name}</h3>
+                        {item.selectedVariant && (
+                          <div className="mb-2">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#78BE20]/10 text-[#78BE20]">
+                              {item.selectedVariant}
+                            </span>
+                          </div>
+                        )}
+                        <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => updateQuantity(cartId, item.quantity - 1)}
+                            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                            data-testid={`decrease-quantity-${index}`}
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="w-12 text-center font-bold" data-testid={`item-quantity-${index}`}>
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateQuantity(cartId, item.quantity + 1)}
+                            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                            data-testid={`increase-quantity-${index}`}
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xl font-black text-[#78BE20]" data-testid={`item-total-${index}`}>
+                            ₺{(item.price * item.quantity).toFixed(2)}
+                          </p>
+                          <p className="text-sm text-gray-500">₺{item.price.toFixed(2)} / adet</p>
+                        </div>
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                          data-testid={`decrease-quantity-${index}`}
+                          onClick={() => handleRemove(cartId, item.displayName || item.name)}
+                          className="text-red-500 hover:text-red-700 transition-colors"
+                          data-testid={`remove-item-${index}`}
                         >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <span className="w-12 text-center font-bold" data-testid={`item-quantity-${index}`}>
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                          data-testid={`increase-quantity-${index}`}
-                        >
-                          <Plus className="w-4 h-4" />
+                          <Trash2 className="w-5 h-5" />
                         </button>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xl font-black text-[#78BE20]" data-testid={`item-total-${index}`}>
-                          ₺{(item.price * item.quantity).toFixed(2)}
-                        </p>
-                        <p className="text-sm text-gray-500">₺{item.price.toFixed(2)} / adet</p>
-                      </div>
-                      <button
-                        onClick={() => handleRemove(item.id, item.name)}
-                        className="text-red-500 hover:text-red-700 transition-colors"
-                        data-testid={`remove-item-${index}`}
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
 
             <motion.div
