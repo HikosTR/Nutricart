@@ -110,7 +110,7 @@ const DashboardHome = () => {
             <table className="w-full" data-testid="recent-orders-table">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Sipariş No</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Sipariş Kodu</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Müşteri</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Tutar</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Durum</th>
@@ -119,7 +119,7 @@ const DashboardHome = () => {
               <tbody>
                 {recentOrders.map((order, index) => (
                   <tr key={order.id} className="border-b border-gray-100 last:border-0" data-testid={`order-row-${index}`}>
-                    <td className="py-3 px-4 text-sm font-mono">{order.id.slice(0, 8)}</td>
+                    <td className="py-3 px-4 text-sm font-mono font-bold text-[#78BE20]">{order.order_code}</td>
                     <td className="py-3 px-4 text-sm">{order.customer_name}</td>
                     <td className="py-3 px-4 text-sm font-bold">₺{order.total_amount.toFixed(2)}</td>
                     <td className="py-3 px-4">
