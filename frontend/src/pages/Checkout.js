@@ -20,9 +20,10 @@ const Checkout = () => {
     customer_email: '',
     customer_phone: '',
     customer_address: '',
-    customer_iban: '',
-    receipt_image_url: '',
+    receipt_file_url: '',
   });
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     fetchPaymentSettings();
