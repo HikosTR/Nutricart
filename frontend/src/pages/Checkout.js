@@ -246,41 +246,50 @@ const Checkout = () => {
                       </div>
                     )}
                     
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        IBAN Numaranız *
-                      </label>
-                      <input
-                        type="text"
-                        name="customer_iban"
-                        value={formData.customer_iban}
-                        onChange={handleChange}
-                        required
-                        className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 bg-white px-4 font-mono"
-                        placeholder="TR00 0000 0000 0000 0000 0000 00"
-                        data-testid="customer-iban-input"
-                      />
-                      <p className="text-xs text-gray-500 mt-2">
-                        Ödeme için kullanacağınız IBAN numarasını girin
-                      </p>
-                    </div>
                     <div className="mt-4">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Ödeme Dekontu (Görsel URL) *
+                        Ödeme Dekontu Yükle *
                       </label>
-                      <input
-                        type="url"
-                        name="receipt_image_url"
-                        value={formData.receipt_image_url}
-                        onChange={handleChange}
-                        required
-                        className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 bg-white px-4"
-                        placeholder="https://example.com/dekont.jpg"
-                        data-testid="receipt-image-input"
-                      />
-                      <p className="text-xs text-gray-500 mt-2">
-                        Ödeme dekontunuzun görsel URL&apos;sini girin (ImgBB, Imgur vb. kullanabilirsiniz)
-                      </p>
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#78BE20] transition-colors">
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/jpg,image/png,application/pdf"
+                          onChange={handleFileChange}
+                          className="hidden"
+                          id="receipt-upload"
+                          disabled={uploadingFile}
+                        />
+                        <label
+                          htmlFor="receipt-upload"
+                          className="cursor-pointer"
+                        >
+                          {uploadingFile ? (
+                            <div className="flex flex-col items-center">
+                              <div className="animate-spin rounded-full h-8 w-8 border-4 border-[#78BE20] border-t-transparent mb-2" />
+                              <p className="text-sm text-gray-600">Yükleniyor...</p>
+                            </div>
+                          ) : selectedFile ? (
+                            <div className="flex flex-col items-center">
+                              <svg className="w-12 h-12 text-green-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              <p className="text-sm font-medium text-gray-900">{selectedFile.name}</p>
+                              <p className="text-xs text-gray-500 mt-1">Dosya yüklendi ✓</p>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center">
+                              <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                              </svg>
+                              <p className="text-sm font-medium text-gray-900 mb-1">Dekont dosyası yükleyin</p>
+                              <p className="text-xs text-gray-500">JPG, PNG veya PDF (Max 5MB)</p>
+                            </div>
+                          )}
+                        </label>
+                      </div>
+                      {!formData.receipt_file_url && (
+                        <p className="text-xs text-red-500 mt-2">* Ödeme dekontu yüklemek zorunludur</p>
+                      )}
                     </div>
                   </div>
                 </div>
