@@ -26,15 +26,29 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product, quantity = 1) => {
     setCart(prev => {
-      const existing = prev.find(item => item.id === product.id);
+      const productKey = product.selectedVariant 
+        ? `${product.id}-${product.selectedVariant}` 
+        : product.id;
+      
+      const existing = prev.find(item => {
+        const itemKey = item.selectedVariant 
+          ? `${item.id}-${item.selectedVariant}` 
+          : item.id;
+        return itemKey === productKey;
+      });
+      
       if (existing) {
-        return prev.map(item =>
-          item.id === product.id
+        return prev.map(item => {
+          const itemKey = item.selectedVariant 
+            ? `${item.id}-${item.selectedVariant}` 
+            : item.id;
+          return itemKey === productKey
             ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
+            : item;
+        });
       }
-      return [...prev, { ...product, quantity }];
+      
+      return [...prev, { ...product, quantity, cartId: productKey }];
     });
   };
 
