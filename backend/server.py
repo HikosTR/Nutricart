@@ -136,6 +136,7 @@ class Order(BaseModel):
     customer_phone: str
     customer_address: str
     customer_iban: str
+    receipt_image_url: Optional[str] = None
     items: List[OrderItem]
     total_amount: float
     status: str = "pending"
@@ -147,6 +148,7 @@ class OrderCreate(BaseModel):
     customer_phone: str
     customer_address: str
     customer_iban: str
+    receipt_image_url: Optional[str] = None
     items: List[OrderItem]
     total_amount: float
 
