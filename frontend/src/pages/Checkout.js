@@ -47,6 +47,42 @@ const Checkout = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Sadece JPG, PNG ve PDF dosyaları yüklenebilir');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Dosya boyutu 5MB\'dan küçük olmalıdır');
+      return;
+    }
+
+    setSelectedFile(file);
+    setUploadingFile(true);
+
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+
+      const response = await axios.post(`${API}/upload`, uploadFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      setFormData({ ...formData, receipt_file_url: response.data.file_url });
+      toast.success('Dosya başarıyla yüklendi!');
+    } catch (error) {
+      toast.error('Dosya yüklenirken hata oluştu');
+      setSelectedFile(null);
+    } finally {
+      setUploadingFile(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
