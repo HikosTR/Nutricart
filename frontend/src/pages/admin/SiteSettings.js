@@ -11,6 +11,10 @@ const SiteSettings = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     logo_url: '',
+    topbar_message: '',
+    footer_about: '',
+    footer_phone: '',
+    footer_email: '',
   });
 
   useEffect(() => {
