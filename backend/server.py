@@ -288,7 +288,7 @@ async def get_videos():
             v['created_at'] = datetime.fromisoformat(v['created_at'])
     return videos
 
-@api_router.post("/videos", response_model=Video)
+@api_router.post("/videos", response_model=Video, status_code=status.HTTP_201_CREATED)
 async def create_video(input: VideoCreate, admin: dict = Depends(get_current_admin)):
     video = Video(**input.model_dump())
     doc = video.model_dump()
