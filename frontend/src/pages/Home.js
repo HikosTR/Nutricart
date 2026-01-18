@@ -56,6 +56,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-[#F9FCF8]">
+      <TopBar />
       <Navbar />
 
       {/* Hero Video Slider */}
