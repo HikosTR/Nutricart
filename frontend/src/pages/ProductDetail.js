@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
+import TopBar from '../components/TopBar';
 import { ShoppingCart, ArrowLeft, Package, Star } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
@@ -83,8 +84,9 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="min-h-screen bg-white">
+        <TopBar />
         <Navbar />
-        <div className="pt-32 flex items-center justify-center">
+        <div className="pt-36 flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#78BE20] border-t-transparent" />
         </div>
       </div>
@@ -93,9 +95,10 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <TopBar />
       <Navbar />
       
-      <div className="pt-32 pb-20">
+      <div className="pt-36 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.button
             onClick={() => navigate('/')}
