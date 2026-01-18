@@ -106,7 +106,12 @@ const OrderTracking = () => {
             <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4" data-testid="order-tracking-title">
               Siparişiniz {getStatusText(order.status)}
             </h1>
-            <p className="text-gray-600">Sipariş No: <span className="font-mono font-bold" data-testid="order-id">{order.id}</span></p>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-3 inline-block">
+              <p className="text-sm text-gray-600">Sipariş Kodu</p>
+              <p className="text-2xl font-black text-[#78BE20] font-mono" data-testid="order-code">
+                {order.order_code}
+              </p>
+            </div>
           </motion.div>
 
           <div className="space-y-6">
