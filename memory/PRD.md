@@ -6,7 +6,7 @@ Modern, mobil uyumlu, beyaz-yeşil-siyah renk temalı Herbalife ürünleri e-tic
 ## Temel Gereksinimler
 
 ### Ana Sayfa
-- ✅ YouTube video slider (otomatik oynatma)
+- ✅ Slider (Video veya Resim) - admin panelden yönetiliyor
 - ✅ Kampanya banner'ı
 - ✅ Ürün kartları (spotlight stil)
 - ✅ Üst duyuru çubuğu (TopBar) - yeşil, siyah yazılı
@@ -26,7 +26,7 @@ Modern, mobil uyumlu, beyaz-yeşil-siyah renk temalı Herbalife ürünleri e-tic
 
 ### Admin Paneli
 - ✅ Ürün yönetimi (varyantlar dahil)
-- ✅ Video slider URL'leri
+- ✅ **Slider Yönetimi** (Video VEYA Resim seçeneği) ← YENİ
 - ✅ Kampanya banner'ları
 - ✅ Müşteri yorumları
 - ✅ Site logosu
@@ -56,6 +56,7 @@ Modern, mobil uyumlu, beyaz-yeşil-siyah renk temalı Herbalife ürünleri e-tic
 
 ### Veritabanı Şemaları
 - **products**: name, description, price, image_url, is_package, variants[{name, image_url, is_available, stock}]
+- **videos (slider)**: title, media_type (video/image), youtube_url, image_url, order, active
 - **orders**: order_code (HRB-XXXXXX), customer_details, items, total_amount, status, payment_receipt_url
 - **settings**: logo_url, topbar_message, footer_about, footer_phone, footer_email, payment_settings
 
@@ -64,7 +65,8 @@ Modern, mobil uyumlu, beyaz-yeşil-siyah renk temalı Herbalife ürünleri e-tic
 2. ✅ Tüm sayfalarda TopBar + Navbar düzeni uygulandı
 3. ✅ Dinamik footer içeriği admin panelinden yönetiliyor
 4. ✅ Stokta olmayan varyant sistemi çalışıyor
-5. ✅ Kapsamlı API testleri oluşturuldu (/app/tests/test_herbalife_api.py)
+5. ✅ **Slider Yönetimi** - Video veya Resim seçeneği eklendi
+6. ✅ Ana sayfada hem video hem resim slider desteği
 
 ## Test Bilgileri
 - Admin: admin@herbalife.com / admin123
