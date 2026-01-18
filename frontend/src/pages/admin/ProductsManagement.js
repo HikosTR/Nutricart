@@ -113,6 +113,7 @@ const ProductsManagement = () => {
     });
     setNewVariantName('');
     setNewVariantStock(100);
+    setNewVariantImage('');
   };
 
   const handleAddVariant = () => {
