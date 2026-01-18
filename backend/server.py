@@ -405,7 +405,12 @@ async def create_order(input: OrderCreate):
 
 @api_router.get("/orders/{order_id}", response_model=Order)
 async def get_order(order_id: str):
-    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    order = await db.orders.find_one({
+        "$or": [
+            {"id": order_id},
+            {"order_code": order_id.upper()}
+        ]
+    }, {"_id": 0})
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     if isinstance(order.get('created_at'), str):
