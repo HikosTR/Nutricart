@@ -324,9 +324,13 @@ const Checkout = () => {
                 
                 <div className="space-y-4 border-b border-gray-200 pb-6">
                   {cart.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
+                    <div key={item.cartId || item.id} className="flex justify-between text-sm">
                       <span className="text-gray-600">
-                        {item.name} x {item.quantity}
+                        {item.name}
+                        {item.selectedVariant && (
+                          <span className="text-[#78BE20] font-medium"> ({item.selectedVariant})</span>
+                        )}
+                        {' x '}{item.quantity}
                       </span>
                       <span className="font-bold">₺{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
