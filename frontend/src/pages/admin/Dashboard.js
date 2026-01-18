@@ -50,6 +50,7 @@ const Dashboard = () => {
     { path: '/admin/banners', icon: Image, label: "Banner'lar" },
     { path: '/admin/orders', icon: ShoppingCart, label: 'Siparişler' },
     { path: '/admin/testimonials', icon: MessageSquare, label: 'Yorumlar' },
+    { path: '/admin/payment-settings', icon: CreditCard, label: 'Ödeme Ayarları' },
   ];
 
   return (
