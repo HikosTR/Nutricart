@@ -49,7 +49,7 @@ const Dashboard = () => {
   const menuItems = [
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/products', icon: Package, label: 'Ürünler' },
-    { path: '/admin/videos', icon: Video, label: 'Videolar' },
+    { path: '/admin/slider', icon: Layers, label: 'Slider' },
     { path: '/admin/banners', icon: Image, label: "Banner'lar" },
     { path: '/admin/orders', icon: ShoppingCart, label: 'Siparişler' },
     { path: '/admin/testimonials', icon: MessageSquare, label: 'Yorumlar' },
