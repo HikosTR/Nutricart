@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import TopBar from '../components/TopBar';
 import { useCart } from '../context/CartContext';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
@@ -17,8 +18,9 @@ const Cart = () => {
   if (cart.length === 0) {
     return (
       <div className="min-h-screen bg-white">
+        <TopBar />
         <Navbar />
-        <div className="pt-32 pb-20">
+        <div className="pt-36 pb-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -45,9 +47,10 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <TopBar />
       <Navbar />
       
-      <div className="pt-32 pb-20">
+      <div className="pt-36 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
