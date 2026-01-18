@@ -53,6 +53,7 @@ class ProductVariant(BaseModel):
     name: str
     stock: int = 100
     image_url: Optional[str] = None
+    is_available: bool = True
 
 class Product(BaseModel):
     model_config = ConfigDict(extra="ignore")
