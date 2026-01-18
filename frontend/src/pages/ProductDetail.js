@@ -26,6 +26,9 @@ const ProductDetail = () => {
     try {
       const response = await axios.get(`${API}/products/${id}`);
       setProduct(response.data);
+      if (response.data.has_variants && response.data.variants && response.data.variants.length > 0) {
+        setSelectedVariant(response.data.variants[0].name);
+      }
     } catch (error) {
       console.error('Error fetching product:', error);
       toast.error('Ürün yüklenirken hata oluştu');
@@ -34,11 +37,31 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart(product, quantity);
+      if (product.has_variants && !selectedVariant) {
+        toast.error('Lütfen bir aroma seçin');
+        return;
+      }
+      
+      const productToAdd = {
+        ...product,
+        selectedVariant: selectedVariant,
+        displayName: selectedVariant ? `${product.name} - ${selectedVariant}` : product.name,
+      };
+      
+      addToCart(productToAdd, quantity);
       toast.success('Ürün sepete eklendi!', {
-        description: `${quantity} adet ${product.name}`,
+        description: `${quantity} adet ${productToAdd.displayName}`,
       });
     }
+  };
+
+  const getAvailableStock = () => {
+    if (!product) return 0;
+    if (product.has_variants && selectedVariant) {
+      const variant = product.variants.find(v => v.name === selectedVariant);
+      return variant ? variant.stock : 0;
+    }
+    return product.stock;
   };
 
   if (!product) {
