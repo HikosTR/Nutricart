@@ -144,6 +144,7 @@ class OrderItem(BaseModel):
 class Order(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    order_code: str = Field(default_factory=lambda: f"HRB-{uuid.uuid4().hex[:6].upper()}")
     customer_name: str
     customer_email: EmailStr
     customer_phone: str
