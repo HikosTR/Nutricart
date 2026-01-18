@@ -207,51 +207,67 @@ const Home = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="group relative bg-white rounded-3xl border border-gray-100 overflow-hidden hover:border-[#78BE20]/50 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2"
-                data-testid={`product-card-${index}`}
-              >
-                <div
-                  className="relative h-64 overflow-hidden cursor-pointer"
-                  onClick={() => navigate(`/product/${product.id}`)}
+            {products.map((product, index) => {
+              const available = isProductAvailable(product);
+              
+              return (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`group relative bg-white rounded-3xl border border-gray-100 overflow-hidden hover:border-[#78BE20]/50 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${!available ? 'opacity-60' : ''}`}
+                  data-testid={`product-card-${index}`}
                 >
-                  <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  {product.is_package && (
-                    <div className="absolute top-4 right-4 bg-[#78BE20] text-white px-3 py-1 rounded-full text-sm font-bold">
-                      Paket
-                    </div>
-                  )}
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-black text-[#78BE20]">
-                      ₺{product.price.toFixed(2)}
-                    </span>
-                    <motion.button
-                      onClick={() => handleAddToCart(product)}
-                      className="bg-black hover:bg-[#78BE20] text-white rounded-full p-3 transition-all duration-300 group-hover:scale-110"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      whileTap={{ scale: 0.95 }}
-                      data-testid={`add-to-cart-${index}`}
-                    >
-                      <ShoppingBag className="w-5 h-5" />
-                    </motion.button>
+                  <div
+                    className="relative h-64 overflow-hidden cursor-pointer"
+                    onClick={() => available && navigate(`/product/${product.id}`)}
+                  >
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    {!available && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <span className="bg-red-500 text-white px-4 py-2 rounded-full font-bold">
+                          TÜKENDİ
+                        </span>
+                      </div>
+                    )}
+                    {product.is_package && (
+                      <div className="absolute top-4 right-4 bg-[#78BE20] text-white px-3 py-1 rounded-full text-sm font-bold">
+                        Paket
+                      </div>
+                    )}
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-black text-[#78BE20]">
+                        ₺{product.price.toFixed(2)}
+                      </span>
+                      <motion.button
+                        onClick={() => available && handleAddToCart(product)}
+                        disabled={!available}
+                        className={`rounded-full p-3 transition-all duration-300 ${
+                          available 
+                            ? 'bg-black hover:bg-[#78BE20] text-white group-hover:scale-110' 
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                        whileHover={available ? { scale: 1.1, rotate: 5 } : {}}
+                        whileTap={available ? { scale: 0.95 } : {}}
+                        data-testid={`add-to-cart-${index}`}
+                      >
+                        <ShoppingBag className="w-5 h-5" />
+                      </motion.button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
 
           {products.length === 0 && (
