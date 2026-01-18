@@ -25,6 +25,7 @@ const ProductsManagement = () => {
   const [newVariantName, setNewVariantName] = useState('');
   const [newVariantStock, setNewVariantStock] = useState(100);
   const [newVariantImage, setNewVariantImage] = useState('');
+  const [newVariantAvailable, setNewVariantAvailable] = useState(true);
 
   useEffect(() => {
     fetchProducts();
