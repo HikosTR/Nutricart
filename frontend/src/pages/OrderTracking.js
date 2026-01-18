@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
+import TopBar from '../components/TopBar';
 import { CheckCircle, Package, Truck, Clock, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -64,8 +65,9 @@ const OrderTracking = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
+        <TopBar />
         <Navbar />
-        <div className="pt-32 flex items-center justify-center">
+        <div className="pt-36 flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#78BE20] border-t-transparent" />
         </div>
       </div>
@@ -75,8 +77,9 @@ const OrderTracking = () => {
   if (!order) {
     return (
       <div className="min-h-screen bg-white">
+        <TopBar />
         <Navbar />
-        <div className="pt-32 text-center">
+        <div className="pt-36 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Sipariş Bulunamadı</h2>
           <button
             onClick={() => navigate('/')}
@@ -91,9 +94,10 @@ const OrderTracking = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <TopBar />
       <Navbar />
       
-      <div className="pt-32 pb-20">
+      <div className="pt-36 pb-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

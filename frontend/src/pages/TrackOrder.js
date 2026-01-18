@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
+import TopBar from '../components/TopBar';
 import { Search, Package } from 'lucide-react';
 
 const TrackOrder = () => {
@@ -17,9 +18,10 @@ const TrackOrder = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-[#F9FCF8]">
+      <TopBar />
       <Navbar />
       
-      <div className="pt-32 pb-20">
+      <div className="pt-36 pb-20">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
