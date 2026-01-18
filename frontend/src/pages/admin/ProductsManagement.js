@@ -124,6 +124,7 @@ const ProductsManagement = () => {
     const newVariant = {
       name: newVariantName.trim(),
       stock: parseInt(newVariantStock),
+      image_url: newVariantImage.trim() || null,
     };
     
     setFormData({
@@ -133,6 +134,7 @@ const ProductsManagement = () => {
     
     setNewVariantName('');
     setNewVariantStock(100);
+    setNewVariantImage('');
   };
 
   const handleRemoveVariant = (index) => {
