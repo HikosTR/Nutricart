@@ -17,12 +17,23 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [siteSettings, setSiteSettings] = useState(null);
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
+    fetchSiteSettings();
   }, []);
+
+  const fetchSiteSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/site-settings`);
+      setSiteSettings(response.data);
+    } catch (error) {
+      console.error('Error fetching site settings:', error);
+    }
+  };
 
   const fetchData = async () => {
     try {
