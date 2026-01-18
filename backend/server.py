@@ -91,24 +91,58 @@ class ProductUpdate(BaseModel):
     has_variants: Optional[bool] = None
     variants: Optional[List[ProductVariant]] = None
 
+class Slide(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    media_type: str = "video"  # "video" or "image"
+    youtube_url: Optional[str] = None
+    image_url: Optional[str] = None
+    order: int = 0
+    active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class SlideCreate(BaseModel):
+    title: str
+    media_type: str = "video"
+    youtube_url: Optional[str] = None
+    image_url: Optional[str] = None
+    order: int = 0
+    active: bool = True
+
+class SlideUpdate(BaseModel):
+    title: Optional[str] = None
+    media_type: Optional[str] = None
+    youtube_url: Optional[str] = None
+    image_url: Optional[str] = None
+    order: Optional[int] = None
+    active: Optional[bool] = None
+
+# Keep Video for backward compatibility
 class Video(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
     youtube_url: str
+    media_type: str = "video"
+    image_url: Optional[str] = None
     order: int = 0
     active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class VideoCreate(BaseModel):
     title: str
-    youtube_url: str
+    youtube_url: Optional[str] = None
+    media_type: str = "video"
+    image_url: Optional[str] = None
     order: int = 0
     active: bool = True
 
 class VideoUpdate(BaseModel):
     title: Optional[str] = None
     youtube_url: Optional[str] = None
+    media_type: Optional[str] = None
+    image_url: Optional[str] = None
     order: Optional[int] = None
     active: Optional[bool] = None
 
