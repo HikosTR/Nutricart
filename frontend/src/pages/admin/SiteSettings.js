@@ -89,9 +89,71 @@ const SiteSettings = () => {
               placeholder="https://example.com/logo.png"
               data-testid="logo-url-input"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Üst Bar Mesajı
+            </label>
+            <input
+              type="text"
+              value={formData.topbar_message}
+              onChange={(e) => setFormData({ ...formData, topbar_message: e.target.value })}
+              className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4"
+              placeholder="🚚 Kargo Ücretsizdir!"
+              data-testid="topbar-message-input"
+            />
             <p className="text-xs text-gray-500 mt-2">
-              Logo görselinizin URL'sini girin (PNG veya JPG önerilir)
+              Sayfanın en üstünde yeşil barda gösterilecek mesaj
             </p>
+          </div>
+
+          <div className="border-t pt-6">
+            <h3 className="font-bold text-gray-900 mb-4">Footer Ayarları</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Hakkımızda
+                </label>
+                <textarea
+                  value={formData.footer_about}
+                  onChange={(e) => setFormData({ ...formData, footer_about: e.target.value })}
+                  rows={2}
+                  className="w-full rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4 py-3"
+                  placeholder="Sağlıklı yaşamınız için doğru adres"
+                  data-testid="footer-about-input"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Telefon
+                </label>
+                <input
+                  type="text"
+                  value={formData.footer_phone}
+                  onChange={(e) => setFormData({ ...formData, footer_phone: e.target.value })}
+                  className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4"
+                  placeholder="+90 542 140 07 55"
+                  data-testid="footer-phone-input"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  E-posta
+                </label>
+                <input
+                  type="email"
+                  value={formData.footer_email}
+                  onChange={(e) => setFormData({ ...formData, footer_email: e.target.value })}
+                  className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4"
+                  placeholder="info@herbalife.com"
+                  data-testid="footer-email-input"
+                />
+              </div>
+            </div>
           </div>
 
           {formData.logo_url && (
