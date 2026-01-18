@@ -358,7 +358,7 @@ async def delete_banner(banner_id: str, admin: dict = Depends(get_current_admin)
     return {"message": "Banner deleted"}
 
 # Order Routes
-@api_router.post("/orders", response_model=Order)
+@api_router.post("/orders", response_model=Order, status_code=status.HTTP_201_CREATED)
 async def create_order(input: OrderCreate):
     order = Order(**input.model_dump())
     doc = order.model_dump()
