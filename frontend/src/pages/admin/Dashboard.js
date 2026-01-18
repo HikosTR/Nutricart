@@ -9,6 +9,7 @@ import {
   Image,
   ShoppingCart,
   MessageSquare,
+  CreditCard,
   LogOut,
   Menu,
   X,
@@ -19,6 +20,7 @@ import VideosManagement from './VideosManagement';
 import BannersManagement from './BannersManagement';
 import OrdersManagement from './OrdersManagement';
 import TestimonialsManagement from './TestimonialsManagement';
+import PaymentSettings from './PaymentSettings';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
