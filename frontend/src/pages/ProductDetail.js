@@ -64,6 +64,15 @@ const ProductDetail = () => {
     return product.stock;
   };
 
+  const getCurrentImage = () => {
+    if (!product) return '';
+    if (product.has_variants && selectedVariant) {
+      const variant = product.variants.find(v => v.name === selectedVariant);
+      return variant?.image_url || product.image_url;
+    }
+    return product.image_url;
+  };
+
   if (!product) {
     return (
       <div className="min-h-screen bg-white">
