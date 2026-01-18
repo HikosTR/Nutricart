@@ -131,7 +131,8 @@ const Dashboard = () => {
           <Routes>
             <Route path="dashboard" element={<DashboardHome />} />
             <Route path="products" element={<ProductsManagement />} />
-            <Route path="videos" element={<VideosManagement />} />
+            <Route path="slider" element={<SliderManagement />} />
+            <Route path="videos" element={<SliderManagement />} />
             <Route path="banners" element={<BannersManagement />} />
             <Route path="orders" element={<OrdersManagement />} />
             <Route path="testimonials" element={<TestimonialsManagement />} />
