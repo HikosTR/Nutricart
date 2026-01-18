@@ -359,18 +359,34 @@ async def delete_product(product_id: str, admin: dict = Depends(get_current_admi
         raise HTTPException(status_code=404, detail="Product not found")
     return {"message": "Product deleted"}
 
-# Video Routes
+# Video/Slider Routes (supports both video and image)
 @api_router.get("/videos", response_model=List[Video])
 async def get_videos():
     videos = await db.videos.find({"active": True}, {"_id": 0}).sort("order", 1).to_list(1000)
     for v in videos:
         if isinstance(v.get('created_at'), str):
             v['created_at'] = datetime.fromisoformat(v['created_at'])
+        # Ensure media_type exists for backward compatibility
+        if 'media_type' not in v:
+            v['media_type'] = 'video'
     return videos
 
 @api_router.post("/videos", response_model=Video, status_code=status.HTTP_201_CREATED)
 async def create_video(input: VideoCreate, admin: dict = Depends(get_current_admin)):
-    video = Video(**input.model_dump())
+    # Validate: either youtube_url (for video) or image_url (for image) must be provided
+    if input.media_type == 'video' and not input.youtube_url:
+        raise HTTPException(status_code=400, detail="YouTube URL is required for video type")
+    if input.media_type == 'image' and not input.image_url:
+        raise HTTPException(status_code=400, detail="Image URL is required for image type")
+    
+    video = Video(
+        title=input.title,
+        youtube_url=input.youtube_url or "",
+        media_type=input.media_type,
+        image_url=input.image_url,
+        order=input.order,
+        active=input.active
+    )
     doc = video.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.videos.insert_one(doc)
@@ -389,6 +405,8 @@ async def update_video(video_id: str, input: VideoUpdate, admin: dict = Depends(
     updated = await db.videos.find_one({"id": video_id}, {"_id": 0})
     if isinstance(updated.get('created_at'), str):
         updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    if 'media_type' not in updated:
+        updated['media_type'] = 'video'
     return updated
 
 @api_router.delete("/videos/{video_id}")
