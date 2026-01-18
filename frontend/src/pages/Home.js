@@ -78,7 +78,7 @@ const Home = () => {
       <Navbar />
 
       {/* Hero Video Slider */}
-      <section className="pt-20 relative" data-testid="hero-section">
+      <section className="pt-28" data-testid="hero-section">
         <div className="relative h-[70vh] md:h-[80vh] overflow-hidden">
           {videos.length > 0 ? (
             <div className="relative w-full h-full">
