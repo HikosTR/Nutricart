@@ -178,17 +178,24 @@ const ProductDetail = () => {
                     {product.variants.map((variant) => (
                       <button
                         key={variant.name}
-                        onClick={() => setSelectedVariant(variant.name)}
+                        onClick={() => variant.is_available && variant.stock > 0 && setSelectedVariant(variant.name)}
+                        disabled={!variant.is_available || variant.stock <= 0}
                         className={`px-4 py-3 rounded-xl border-2 font-medium transition-all duration-200 ${
                           selectedVariant === variant.name
                             ? 'border-[#78BE20] bg-[#78BE20]/10 text-[#78BE20]'
+                            : (!variant.is_available || variant.stock <= 0)
+                            ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
                             : 'border-gray-200 hover:border-[#78BE20]/50'
                         }`}
                         data-testid={`variant-${variant.name}`}
                       >
                         <div className="text-center">
                           <div className="font-bold">{variant.name}</div>
-                          <div className="text-xs text-gray-500 mt-1">Stok: {variant.stock}</div>
+                          {(!variant.is_available || variant.stock <= 0) ? (
+                            <div className="text-xs text-red-500 mt-1">TÜKENDİ</div>
+                          ) : (
+                            <div className="text-xs text-gray-500 mt-1">Stok: {variant.stock}</div>
+                          )}
                         </div>
                       </button>
                     ))}
