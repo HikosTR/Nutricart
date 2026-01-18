@@ -327,7 +327,7 @@ async def get_banners():
             b['created_at'] = datetime.fromisoformat(b['created_at'])
     return banners
 
-@api_router.post("/banners", response_model=Banner)
+@api_router.post("/banners", response_model=Banner, status_code=status.HTTP_201_CREATED)
 async def create_banner(input: BannerCreate, admin: dict = Depends(get_current_admin)):
     banner = Banner(**input.model_dump())
     doc = banner.model_dump()
