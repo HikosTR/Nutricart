@@ -77,19 +77,31 @@ const Home = () => {
       <TopBar />
       <Navbar />
 
-      {/* Hero Video Slider */}
+      {/* Hero Slider - Video or Image */}
       <section className="pt-28" data-testid="hero-section">
         <div className="relative h-[70vh] md:h-[80vh] overflow-hidden">
           {videos.length > 0 ? (
             <div className="relative w-full h-full">
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30 z-10" />
-              <iframe
-                src={getYouTubeEmbedUrl(videos[currentVideoIndex]?.youtube_url)}
-                className="w-full h-full object-cover"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                data-testid="hero-video-iframe"
-              />
+              
+              {/* Render Video or Image based on media_type */}
+              {videos[currentVideoIndex]?.media_type === 'image' ? (
+                <img
+                  src={videos[currentVideoIndex]?.image_url}
+                  alt={videos[currentVideoIndex]?.title}
+                  className="w-full h-full object-cover"
+                  data-testid="hero-image"
+                />
+              ) : (
+                <iframe
+                  src={getYouTubeEmbedUrl(videos[currentVideoIndex]?.youtube_url)}
+                  className="w-full h-full object-cover"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  data-testid="hero-video-iframe"
+                />
+              )}
+              
               <div className="absolute bottom-0 left-0 right-0 z-20 p-8 md:p-12">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
