@@ -102,6 +102,7 @@ const Checkout = () => {
           product_name: item.name,
           quantity: item.quantity,
           price: item.price,
+          variant: item.selectedVariant || null,
         })),
         total_amount: getCartTotal(),
       };
