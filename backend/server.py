@@ -525,6 +525,39 @@ async def update_site_settings(input: SiteSettingsUpdate, admin: dict = Depends(
         updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
     return updated
 
+# File Upload Route
+@api_router.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    try:
+        allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
+        if file.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="Sadece JPG, PNG ve PDF dosyaları yüklenebilir")
+        
+        max_size = 5 * 1024 * 1024  # 5MB
+        contents = await file.read()
+        if len(contents) > max_size:
+            raise HTTPException(status_code=400, detail="Dosya boyutu 5MB'dan küçük olmalıdır")
+        
+        file_id = str(uuid.uuid4())
+        file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+        file_name = f"{file_id}.{file_ext}"
+        
+        upload_dir = Path("/app/uploads")
+        upload_dir.mkdir(exist_ok=True)
+        
+        file_path = upload_dir / file_name
+        with open(file_path, 'wb') as f:
+            f.write(contents)
+        
+        base_url = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001')
+        file_url = f"{base_url}/uploads/{file_name}"
+        
+        return {"file_url": file_url, "file_name": file_name}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Dosya yükleme hatası: {str(e)}")
+
 app.include_router(api_router)
 
 app.add_middleware(
