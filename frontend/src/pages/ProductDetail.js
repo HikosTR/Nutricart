@@ -189,7 +189,7 @@ const ProductDetail = () => {
                     </button>
                     <span className="text-2xl font-bold w-12 text-center" data-testid="quantity-display">{quantity}</span>
                     <button
-                      onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                      onClick={() => setQuantity(Math.min(getAvailableStock(), quantity + 1))}
                       className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center font-bold text-xl transition-colors"
                       data-testid="increase-quantity-button"
                     >
