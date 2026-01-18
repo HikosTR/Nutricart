@@ -1,0 +1,145 @@
+import { ShoppingCart, Instagram, Menu, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+
+const Navbar = () => {
+  const { getCartCount } = useCart();
+  const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const cartCount = getCartCount();
+
+  return (
+    <motion.nav
+      data-testid="main-navbar"
+      className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100"
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          <Link to="/" className="flex items-center space-x-3 group">
+            <motion.div
+              className="text-3xl font-black tracking-tighter"
+              whileHover={{ scale: 1.05 }}
+            >
+              <span className="text-[#78BE20]">Herba</span>
+              <span className="text-black">Life</span>
+            </motion.div>
+          </Link>
+
+          <div className="hidden md:flex items-center space-x-8">
+            <Link
+              to="/"
+              data-testid="nav-home-link"
+              className="text-gray-700 hover:text-[#78BE20] font-medium transition-colors duration-200"
+            >
+              Ana Sayfa
+            </Link>
+            <a
+              href="#products"
+              data-testid="nav-products-link"
+              className="text-gray-700 hover:text-[#78BE20] font-medium transition-colors duration-200"
+            >
+              Ürünler
+            </a>
+            <a
+              href="#testimonials"
+              data-testid="nav-testimonials-link"
+              className="text-gray-700 hover:text-[#78BE20] font-medium transition-colors duration-200"
+            >
+              Yorumlar
+            </a>
+
+            <a
+              href="https://www.instagram.com/herbalife/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="instagram-link"
+              className="text-gray-700 hover:text-pink-600 transition-colors duration-200"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+
+            <button
+              onClick={() => navigate('/cart')}
+              data-testid="cart-button"
+              className="relative text-gray-700 hover:text-[#78BE20] transition-colors duration-200"
+            >
+              <ShoppingCart className="w-6 h-6" />
+              {cartCount > 0 && (
+                <motion.span
+                  data-testid="cart-count-badge"
+                  className="absolute -top-2 -right-2 bg-[#78BE20] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500 }}
+                >
+                  {cartCount}
+                </motion.span>
+              )}
+            </button>
+          </div>
+
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden text-gray-700"
+            data-testid="mobile-menu-button"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white border-t border-gray-100"
+            data-testid="mobile-menu"
+          >
+            <div className="px-4 py-6 space-y-4">
+              <Link
+                to="/"
+                className="block text-gray-700 hover:text-[#78BE20] font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Ana Sayfa
+              </Link>
+              <a
+                href="#products"
+                className="block text-gray-700 hover:text-[#78BE20] font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Ürünler
+              </a>
+              <a
+                href="#testimonials"
+                className="block text-gray-700 hover:text-[#78BE20] font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Yorumlar
+              </a>
+              <button
+                onClick={() => {
+                  navigate('/cart');
+                  setMobileMenuOpen(false);
+                }}
+                className="flex items-center space-x-2 text-gray-700 hover:text-[#78BE20] font-medium"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                <span>Sepetim ({cartCount})</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
+  );
+};
+
+export default Navbar;
