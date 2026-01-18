@@ -19,7 +19,11 @@ const ProductsManagement = () => {
     category: '',
     stock: 100,
     is_package: false,
+    has_variants: false,
+    variants: [],
   });
+  const [newVariantName, setNewVariantName] = useState('');
+  const [newVariantStock, setNewVariantStock] = useState(100);
 
   useEffect(() => {
     fetchProducts();
