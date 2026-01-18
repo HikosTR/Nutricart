@@ -314,6 +314,70 @@ const ProductsManagement = () => {
                   <label className="text-sm font-medium text-gray-700">Bu bir paket ürün</label>
                 </div>
 
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    checked={formData.has_variants}
+                    onChange={(e) => {
+                      setFormData({ ...formData, has_variants: e.target.checked });
+                      if (!e.target.checked) {
+                        setFormData({ ...formData, has_variants: false, variants: [] });
+                      }
+                    }}
+                    className="w-5 h-5 rounded border-gray-300 text-[#78BE20] focus:ring-[#78BE20]"
+                    data-testid="product-has-variants-checkbox"
+                  />
+                  <label className="text-sm font-medium text-gray-700">Bu ürünün varyantları var (Aroma seçimi)</label>
+                </div>
+
+                {formData.has_variants && (
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-4">
+                    <h3 className="font-bold text-gray-900 mb-3">Varyantlar (Aromalar)</h3>
+                    
+                    <div className="space-y-2 mb-4">
+                      {formData.variants.map((variant, index) => (
+                        <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                          <div>
+                            <span className="font-medium">{variant.name}</span>
+                            <span className="text-sm text-gray-500 ml-3">Stok: {variant.stock}</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveVariant(index)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            Sil
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <input
+                        type="text"
+                        value={newVariantName}
+                        onChange={(e) => setNewVariantName(e.target.value)}
+                        placeholder="Varyant adı (ör: Çikolata)"
+                        className="col-span-2 h-10 rounded-lg border-gray-200 px-3 text-sm"
+                      />
+                      <input
+                        type="number"
+                        value={newVariantStock}
+                        onChange={(e) => setNewVariantStock(e.target.value)}
+                        placeholder="Stok"
+                        className="h-10 rounded-lg border-gray-200 px-3 text-sm"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleAddVariant}
+                      className="mt-2 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium"
+                    >
+                      + Varyant Ekle
+                    </button>
+                  </div>
+                )}
+
                 <div className="flex space-x-3 pt-4">
                   <button
                     type="button"
