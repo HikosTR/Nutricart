@@ -207,7 +207,7 @@ async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 # Auth Routes
-@api_router.post("/auth/register", response_model=Token)
+@api_router.post("/auth/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def register_admin(input: AdminCreate):
     existing = await db.admins.find_one({"email": input.email}, {"_id": 0})
     if existing:
