@@ -493,6 +493,37 @@ async def update_payment_settings(input: PaymentSettingsUpdate, admin: dict = De
         updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
     return updated
 
+# Site Settings Routes
+@api_router.get("/site-settings", response_model=SiteSettings)
+async def get_site_settings():
+    settings = await db.site_settings.find_one({"id": "site_settings"}, {"_id": 0})
+    if not settings:
+        default_settings = SiteSettings()
+        doc = default_settings.model_dump()
+        doc['updated_at'] = doc['updated_at'].isoformat()
+        await db.site_settings.insert_one(doc)
+        return default_settings
+    if isinstance(settings.get('updated_at'), str):
+        settings['updated_at'] = datetime.fromisoformat(settings['updated_at'])
+    return settings
+
+@api_router.put("/site-settings", response_model=SiteSettings)
+async def update_site_settings(input: SiteSettingsUpdate, admin: dict = Depends(get_current_admin)):
+    settings = SiteSettings(**input.model_dump(), id="site_settings")
+    doc = settings.model_dump()
+    doc['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.site_settings.update_one(
+        {"id": "site_settings"},
+        {"$set": doc},
+        upsert=True
+    )
+    
+    updated = await db.site_settings.find_one({"id": "site_settings"}, {"_id": 0})
+    if isinstance(updated.get('updated_at'), str):
+        updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
+    return updated
+
 app.include_router(api_router)
 
 app.add_middleware(
