@@ -20,6 +20,7 @@ const Checkout = () => {
     customer_email: '',
     customer_phone: '',
     customer_address: '',
+    customer_iban: '',
     receipt_file_url: '',
   });
   const [uploadingFile, setUploadingFile] = useState(false);
