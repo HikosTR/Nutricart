@@ -316,7 +316,9 @@ const Home = () => {
               <h3 className="text-2xl font-black mb-4">
                 <span className="text-[#78BE20]">Herba</span>Life
               </h3>
-              <p className="text-gray-400">Sağlıklı yaşamınız için doğru adres</p>
+              <p className="text-gray-400">
+                {siteSettings?.footer_about || 'Sağlıklı yaşamınız için doğru adres'}
+              </p>
             </div>
             <div>
               <h4 className="font-bold mb-4">Hızlı Linkler</h4>
@@ -335,7 +337,14 @@ const Home = () => {
             </div>
             <div>
               <h4 className="font-bold mb-4">Bize Ulaşın</h4>
-              <p className="text-gray-400">WhatsApp: +90 542 140 07 55</p>
+              <p className="text-gray-400">
+                WhatsApp: {siteSettings?.footer_phone || '+90 542 140 07 55'}
+              </p>
+              {siteSettings?.footer_email && (
+                <p className="text-gray-400 mt-2">
+                  Email: {siteSettings.footer_email}
+                </p>
+              )}
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
