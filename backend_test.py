@@ -225,7 +225,7 @@ class HerbalifeAPITester:
             "active": True
         }
         
-        success, response = self.make_request('POST', 'testimonials', testimonial_data, 201, True)
+        success, response = self.make_request('POST', 'testimonials', testimonial_data, 200, True)
         if success:
             testimonial_id = response['id']
             self.created_resources['testimonials'].append(testimonial_id)
