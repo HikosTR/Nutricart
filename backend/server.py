@@ -249,7 +249,7 @@ async def get_product(product_id: str):
         product['created_at'] = datetime.fromisoformat(product['created_at'])
     return product
 
-@api_router.post("/products", response_model=Product)
+@api_router.post("/products", response_model=Product, status_code=status.HTTP_201_CREATED)
 async def create_product(input: ProductCreate, admin: dict = Depends(get_current_admin)):
     product = Product(**input.model_dump())
     doc = product.model_dump()
