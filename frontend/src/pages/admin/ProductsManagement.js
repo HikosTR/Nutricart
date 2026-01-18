@@ -354,8 +354,15 @@ const ProductsManagement = () => {
                               />
                             )}
                             <div>
-                              <span className="font-medium">{variant.name}</span>
-                              <span className="text-sm text-gray-500 ml-3">Stok: {variant.stock}</span>
+                              <div className="flex items-center space-x-2">
+                                <span className="font-medium">{variant.name}</span>
+                                {!variant.is_available && (
+                                  <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full font-bold">
+                                    TÜKENDİ
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-sm text-gray-500">Stok: {variant.stock}</span>
                             </div>
                           </div>
                           <button
@@ -393,6 +400,15 @@ const ProductsManagement = () => {
                         placeholder="Görsel URL (opsiyonel)"
                         className="w-full h-10 rounded-lg border-gray-200 px-3 text-sm"
                       />
+                      <div className="flex items-center space-x-2 bg-white p-2 rounded-lg border">
+                        <input
+                          type="checkbox"
+                          checked={newVariantAvailable}
+                          onChange={(e) => setNewVariantAvailable(e.target.checked)}
+                          className="w-4 h-4 rounded border-gray-300 text-[#78BE20] focus:ring-[#78BE20]"
+                        />
+                        <label className="text-sm text-gray-700">Satışta (Tükendi olarak işaretle)</label>
+                      </div>
                     </div>
                     <button
                       type="button"
