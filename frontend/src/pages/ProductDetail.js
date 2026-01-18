@@ -42,10 +42,17 @@ const ProductDetail = () => {
         return;
       }
       
+      let variantImageUrl = product.image_url;
+      if (product.has_variants && selectedVariant) {
+        const variant = product.variants.find(v => v.name === selectedVariant);
+        variantImageUrl = variant?.image_url || product.image_url;
+      }
+      
       const productToAdd = {
         ...product,
         selectedVariant: selectedVariant,
         displayName: selectedVariant ? `${product.name} - ${selectedVariant}` : product.name,
+        image_url: variantImageUrl,
       };
       
       addToCart(productToAdd, quantity);
