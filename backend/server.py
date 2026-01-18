@@ -139,6 +139,7 @@ class OrderItem(BaseModel):
     product_name: str
     quantity: int
     price: float
+    variant: Optional[str] = None
 
 class Order(BaseModel):
     model_config = ConfigDict(extra="ignore")
