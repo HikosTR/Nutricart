@@ -561,6 +561,11 @@ async def upload_file(file: UploadFile = File(...)):
 
 app.include_router(api_router)
 
+# Mount uploads directory for static file serving
+upload_dir = Path("/app/uploads")
+upload_dir.mkdir(exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="/app/uploads"), name="uploads")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
