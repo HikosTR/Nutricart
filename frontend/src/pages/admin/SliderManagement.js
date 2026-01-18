@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Plus, Edit, Trash2, X, Video as VideoIcon, Image as ImageIcon } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Video as VideoIcon, Image as ImageIcon, Upload, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -11,9 +11,10 @@ const SliderManagement = () => {
   const [slides, setSlides] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingSlide, setEditingSlide] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
-    media_type: 'video',
+    media_type: 'image',
     youtube_url: '',
     image_url: '',
     order: 0,
@@ -32,6 +33,46 @@ const SliderManagement = () => {
       setSlides(response.data);
     } catch (error) {
       console.error('Error fetching slides:', error);
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Geçersiz dosya tipi', { description: 'Sadece JPG, PNG, WebP ve GIF dosyaları yüklenebilir' });
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('Dosya çok büyük', { description: 'Maksimum dosya boyutu 10MB' });
+      return;
+    }
+
+    setUploading(true);
+    const uploadFormData = new FormData();
+    uploadFormData.append('file', file);
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      const response = await axios.post(`${API}/upload`, uploadFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setFormData({ ...formData, image_url: response.data.url });
+      toast.success('Resim yüklendi!');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Yükleme başarısız', { description: error.response?.data?.detail || 'Bir hata oluştu' });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -98,7 +139,7 @@ const SliderManagement = () => {
     setEditingSlide(null);
     setFormData({
       title: '',
-      media_type: 'video',
+      media_type: 'image',
       youtube_url: '',
       image_url: '',
       order: 0,
@@ -214,7 +255,7 @@ const SliderManagement = () => {
 
       {slides.length === 0 && (
         <div className="text-center py-12 bg-gray-50 rounded-2xl">
-          <VideoIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <ImageIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 text-lg">Henüz slider öğesi eklenmemiş</p>
           <p className="text-gray-400 text-sm mt-2">Video veya resim ekleyerek başlayın</p>
         </div>
@@ -253,6 +294,19 @@ const SliderManagement = () => {
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
+                      onClick={() => setFormData({ ...formData, media_type: 'image' })}
+                      className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${
+                        formData.media_type === 'image'
+                          ? 'border-[#78BE20] bg-[#78BE20]/10 text-[#78BE20]'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <ImageIcon className="w-6 h-6" />
+                      <span className="font-medium">Resim</span>
+                      <span className="text-xs text-gray-500">PC'den Yükle</span>
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => setFormData({ ...formData, media_type: 'video' })}
                       className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${
                         formData.media_type === 'video'
@@ -263,19 +317,6 @@ const SliderManagement = () => {
                       <VideoIcon className="w-6 h-6" />
                       <span className="font-medium">Video</span>
                       <span className="text-xs text-gray-500">YouTube URL</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, media_type: 'image' })}
-                      className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${
-                        formData.media_type === 'image'
-                          ? 'border-[#78BE20] bg-[#78BE20]/10 text-[#78BE20]'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <ImageIcon className="w-6 h-6" />
-                      <span className="font-medium">Resim</span>
-                      <span className="text-xs text-gray-500">Resim URL</span>
                     </button>
                   </div>
                 </div>
@@ -308,24 +349,74 @@ const SliderManagement = () => {
                   </div>
                 ) : (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Resim URL</label>
-                    <input
-                      type="url"
-                      value={formData.image_url}
-                      onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                      required={formData.media_type === 'image'}
-                      className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4"
-                      placeholder="https://example.com/image.jpg"
-                      data-testid="slide-image-input"
-                    />
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Resim</label>
+                    
+                    {/* File Upload Area */}
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        id="slider-image-upload"
+                        data-testid="slide-image-file-input"
+                      />
+                      <label
+                        htmlFor="slider-image-upload"
+                        className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
+                          uploading 
+                            ? 'border-[#78BE20] bg-[#78BE20]/5' 
+                            : 'border-gray-300 hover:border-[#78BE20] hover:bg-gray-50'
+                        }`}
+                      >
+                        {uploading ? (
+                          <div className="flex flex-col items-center">
+                            <Loader2 className="w-8 h-8 text-[#78BE20] animate-spin mb-2" />
+                            <span className="text-sm text-gray-600">Yükleniyor...</span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center">
+                            <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                            <span className="text-sm font-medium text-gray-600">Resim Yükle</span>
+                            <span className="text-xs text-gray-400 mt-1">JPG, PNG, WebP, GIF (max 10MB)</span>
+                          </div>
+                        )}
+                      </label>
+                    </div>
+
+                    {/* URL Input (alternative) */}
+                    <div className="mt-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="flex-1 h-px bg-gray-200"></div>
+                        <span className="text-xs text-gray-400">veya URL girin</span>
+                        <div className="flex-1 h-px bg-gray-200"></div>
+                      </div>
+                      <input
+                        type="url"
+                        value={formData.image_url}
+                        onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                        className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4"
+                        placeholder="https://example.com/image.jpg"
+                        data-testid="slide-image-url-input"
+                      />
+                    </div>
+
+                    {/* Image Preview */}
                     {formData.image_url && (
-                      <div className="mt-3 rounded-xl overflow-hidden border border-gray-200">
+                      <div className="mt-3 rounded-xl overflow-hidden border border-gray-200 relative">
                         <img 
                           src={formData.image_url} 
                           alt="Preview" 
                           className="w-full h-40 object-cover"
                           onError={(e) => e.target.style.display = 'none'}
                         />
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, image_url: '' })}
+                          className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
                       </div>
                     )}
                   </div>
@@ -365,7 +456,8 @@ const SliderManagement = () => {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-[#78BE20] hover:bg-[#65A318] text-white py-3 rounded-full font-bold transition-colors"
+                    disabled={uploading || (formData.media_type === 'image' && !formData.image_url)}
+                    className="flex-1 bg-[#78BE20] hover:bg-[#65A318] text-white py-3 rounded-full font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     data-testid="save-slide-button"
                   >
                     {editingSlide ? 'Güncelle' : 'Ekle'}
