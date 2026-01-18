@@ -217,7 +217,12 @@ const OrdersManagement = () => {
                     <div key={idx} className="flex justify-between items-center py-3 border-b border-gray-100">
                       <div>
                         <p className="font-medium text-gray-900">{item.product_name}</p>
-                        <p className="text-sm text-gray-600">Adet: {item.quantity}</p>
+                        {item.variant && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#78BE20]/10 text-[#78BE20] mt-1">
+                            {item.variant}
+                          </span>
+                        )}
+                        <p className="text-sm text-gray-600 mt-1">Adet: {item.quantity}</p>
                       </div>
                       <p className="font-bold text-[#78BE20]">₺{(item.price * item.quantity).toFixed(2)}</p>
                     </div>
