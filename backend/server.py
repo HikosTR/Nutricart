@@ -177,6 +177,19 @@ class TestimonialUpdate(BaseModel):
     comment: Optional[str] = None
     active: Optional[bool] = None
 
+class PaymentSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = "payment_settings"
+    account_holder_name: str
+    iban: str
+    bank_name: Optional[str] = None
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class PaymentSettingsUpdate(BaseModel):
+    account_holder_name: str
+    iban: str
+    bank_name: Optional[str] = None
+
 # Auth helpers
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
