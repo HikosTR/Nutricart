@@ -184,15 +184,12 @@ const OrdersManagement = () => {
               <div>
                 <h3 className="font-bold text-gray-900 mb-4">Ödeme Bilgileri</h3>
                 <div className="space-y-2 text-sm">
-                  <p>
-                    <span className="text-gray-600">Müşteri IBAN:</span> <span className="font-medium font-mono">{selectedOrder.customer_iban}</span>
-                  </p>
-                  {selectedOrder.receipt_image_url && (
+                  {selectedOrder.receipt_file_url && (
                     <div>
                       <span className="text-gray-600">Ödeme Dekontu:</span>
                       <div className="mt-2">
                         <a 
-                          href={selectedOrder.receipt_image_url} 
+                          href={selectedOrder.receipt_file_url} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="inline-flex items-center px-4 py-2 bg-[#78BE20] text-white rounded-lg hover:bg-[#65A318] transition-colors"
