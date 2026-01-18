@@ -126,20 +126,6 @@ const OrderTracking = () => {
                 
                 <div className="space-y-3">
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Alıcı IBAN</p>
-                    <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
-                      <span className="font-mono font-bold text-sm" data-testid="customer-iban">{order.customer_iban}</span>
-                      <button
-                        onClick={() => copyToClipboard(order.customer_iban)}
-                        className="text-[#78BE20] hover:text-[#65A318] transition-colors"
-                        data-testid="copy-iban-button"
-                      >
-                        <Copy className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div>
                     <p className="text-xs text-gray-500 mb-1">Tutar</p>
                     <div className="bg-gray-50 rounded-xl p-3">
                       <span className="text-2xl font-black text-[#78BE20]" data-testid="order-total">
