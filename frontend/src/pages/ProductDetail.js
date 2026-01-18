@@ -146,8 +146,35 @@ const ProductDetail = () => {
                   </span>
                   <span className="text-gray-500">/ Adet</span>
                 </div>
-                <p className="text-sm text-gray-600">Stok Durumu: <span className="text-[#78BE20] font-bold">{product.stock} adet</span></p>
+                <p className="text-sm text-gray-600">
+                  Stok Durumu: <span className="text-[#78BE20] font-bold">{getAvailableStock()} adet</span>
+                </p>
               </div>
+
+              {product.has_variants && product.variants && product.variants.length > 0 && (
+                <div className="space-y-3">
+                  <label className="block text-sm font-medium text-gray-700">Aroma Seçin</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {product.variants.map((variant) => (
+                      <button
+                        key={variant.name}
+                        onClick={() => setSelectedVariant(variant.name)}
+                        className={`px-4 py-3 rounded-xl border-2 font-medium transition-all duration-200 ${
+                          selectedVariant === variant.name
+                            ? 'border-[#78BE20] bg-[#78BE20]/10 text-[#78BE20]'
+                            : 'border-gray-200 hover:border-[#78BE20]/50'
+                        }`}
+                        data-testid={`variant-${variant.name}`}
+                      >
+                        <div className="text-center">
+                          <div className="font-bold">{variant.name}</div>
+                          <div className="text-xs text-gray-500 mt-1">Stok: {variant.stock}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-4">
                 <div>
