@@ -52,16 +52,17 @@ const TrackOrder = () => {
                   <input
                     type="text"
                     value={orderId}
-                    onChange={(e) => setOrderId(e.target.value)}
+                    onChange={(e) => setOrderId(e.target.value.toUpperCase())}
                     required
-                    className="w-full h-14 rounded-xl border-2 border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 bg-white pl-12 pr-4 text-lg font-mono"
-                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    className="w-full h-14 rounded-xl border-2 border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 bg-white pl-12 pr-4 text-lg font-mono uppercase"
+                    placeholder="HRB-XXXXXX"
+                    maxLength={10}
                     data-testid="order-id-input"
                   />
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  Sipariş numaranız e-posta ile gönderilmiştir
+                  Sipariş kodunuz sipariş tamamlandıktan sonra gösterilir (örn: HRB-A1B2C3)
                 </p>
               </div>
 
