@@ -43,7 +43,7 @@ const Home = () => {
   const getYouTubeEmbedUrl = (url) => {
     if (!url) return '';
     const videoId = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\S*[?&]v=))([\w-]{11})/);
-    return videoId ? `https://www.youtube.com/embed/${videoId[1]}?autoplay=0&controls=1&rel=0` : '';
+    return videoId ? `https://www.youtube.com/embed/${videoId[1]}?autoplay=1&mute=1&controls=1&rel=0&loop=1&playlist=${videoId[1]}` : '';
   };
 
   const handleAddToCart = (product) => {
