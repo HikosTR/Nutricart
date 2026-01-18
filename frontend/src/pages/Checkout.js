@@ -241,7 +241,7 @@ const Checkout = () => {
                         data-testid="receipt-image-input"
                       />
                       <p className="text-xs text-gray-500 mt-2">
-                        Ödeme dekontunuzun görsel URL'sini girin (ImgBB, Imgur vb. kullanabilirsiniz)
+                        Ödeme dekontunuzun görsel URL&apos;sini girin (ImgBB, Imgur vb. kullanabilirsiniz)
                       </p>
                     </div>
                   </div>
