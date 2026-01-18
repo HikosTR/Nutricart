@@ -119,7 +119,53 @@ const OrderTracking = () => {
             >
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Ödeme Bilgileri</h2>
               
-              <div className=\"bg-white rounded-2xl p-6 border-2 border-[#78BE20]\">\n                <p className=\"text-sm text-gray-600 mb-4\">\n                  Lütfen ödemenizi aşağıdaki hesaba yapınız. Ödeme yaptıktan sonra, sipariş işleme alınacaktır.\n                </p>\n                \n                <div className=\"space-y-3\">\n                  <div>\n                    <p className=\"text-xs text-gray-500 mb-1\">Alıcı IBAN</p>\n                    <div className=\"flex items-center justify-between bg-gray-50 rounded-xl p-3\">\n                      <span className=\"font-mono font-bold text-sm\" data-testid=\"customer-iban\">{order.customer_iban}</span>\n                      <button\n                        onClick={() => copyToClipboard(order.customer_iban)}\n                        className=\"text-[#78BE20] hover:text-[#65A318] transition-colors\"\n                        data-testid=\"copy-iban-button\"\n                      >\n                        <Copy className=\"w-5 h-5\" />\n                      </button>\n                    </div>\n                  </div>\n                  \n                  <div>\n                    <p className=\"text-xs text-gray-500 mb-1\">Tutar</p>\n                    <div className=\"bg-gray-50 rounded-xl p-3\">\n                      <span className=\"text-2xl font-black text-[#78BE20]\" data-testid=\"order-total\">\n                        ₺{order.total_amount.toFixed(2)}\n                      </span>\n                    </div>\n                  </div>\n\n                  {order.receipt_image_url && (\n                    <div>\n                      <p className=\"text-xs text-gray-500 mb-1\">Ödeme Dekontu</p>\n                      <div className=\"bg-gray-50 rounded-xl p-3\">\n                        <a \n                          href={order.receipt_image_url} \n                          target=\"_blank\" \n                          rel=\"noopener noreferrer\"\n                          className=\"text-[#78BE20] hover:text-[#65A318] text-sm underline\"\n                          data-testid=\"receipt-link\"\n                        >\n                          Dekontu Görüntüle\n                        </a>\n                      </div>\n                    </div>\n                  )}\n                </div>\n              </div>
+              <div className="bg-white rounded-2xl p-6 border-2 border-[#78BE20]">
+                <p className="text-sm text-gray-600 mb-4">
+                  Lütfen ödemenizi aşağıdaki hesaba yapınız. Ödeme yaptıktan sonra, sipariş işleme alınacaktır.
+                </p>
+                
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Alıcı IBAN</p>
+                    <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
+                      <span className="font-mono font-bold text-sm" data-testid="customer-iban">{order.customer_iban}</span>
+                      <button
+                        onClick={() => copyToClipboard(order.customer_iban)}
+                        className="text-[#78BE20] hover:text-[#65A318] transition-colors"
+                        data-testid="copy-iban-button"
+                      >
+                        <Copy className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Tutar</p>
+                    <div className="bg-gray-50 rounded-xl p-3">
+                      <span className="text-2xl font-black text-[#78BE20]" data-testid="order-total">
+                        ₺{order.total_amount.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {order.receipt_image_url && (
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Ödeme Dekontu</p>
+                      <div className="bg-gray-50 rounded-xl p-3">
+                        <a 
+                          href={order.receipt_image_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-[#78BE20] hover:text-[#65A318] text-sm underline"
+                          data-testid="receipt-link"
+                        >
+                          Dekontu Görüntüle
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </motion.div>
 
             <motion.div
