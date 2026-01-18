@@ -79,7 +79,7 @@ const OrdersManagement = () => {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="text-left py-4 px-6 font-medium text-gray-600 text-sm">Sipariş No</th>
+                <th className="text-left py-4 px-6 font-medium text-gray-600 text-sm">Sipariş Kodu</th>
                 <th className="text-left py-4 px-6 font-medium text-gray-600 text-sm">Müşteri</th>
                 <th className="text-left py-4 px-6 font-medium text-gray-600 text-sm">Tutar</th>
                 <th className="text-left py-4 px-6 font-medium text-gray-600 text-sm">Durum</th>
