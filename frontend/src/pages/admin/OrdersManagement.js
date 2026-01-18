@@ -161,6 +161,11 @@ const OrdersManagement = () => {
           >
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Sipariş Detayları</h2>
 
+            <div className="bg-[#F9FCF8] rounded-xl p-4 mb-6">
+              <p className="text-sm text-gray-600">Sipariş Kodu</p>
+              <p className="text-2xl font-black text-[#78BE20] font-mono">{selectedOrder.order_code}</p>
+            </div>
+
             <div className="space-y-6">
               <div className="bg-gray-50 rounded-2xl p-6">
                 <h3 className="font-bold text-gray-900 mb-4">Müşteri Bilgileri</h3>
