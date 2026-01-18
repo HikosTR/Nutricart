@@ -90,6 +90,8 @@ const ProductsManagement = () => {
       category: product.category,
       stock: product.stock,
       is_package: product.is_package,
+      has_variants: product.has_variants || false,
+      variants: product.variants || [],
     });
     setShowModal(true);
   };
@@ -105,6 +107,37 @@ const ProductsManagement = () => {
       category: '',
       stock: 100,
       is_package: false,
+      has_variants: false,
+      variants: [],
+    });
+    setNewVariantName('');
+    setNewVariantStock(100);
+  };
+
+  const handleAddVariant = () => {
+    if (!newVariantName.trim()) {
+      toast.error('Varyant adı boş olamaz');
+      return;
+    }
+    
+    const newVariant = {
+      name: newVariantName.trim(),
+      stock: parseInt(newVariantStock),
+    };
+    
+    setFormData({
+      ...formData,
+      variants: [...formData.variants, newVariant],
+    });
+    
+    setNewVariantName('');
+    setNewVariantStock(100);
+  };
+
+  const handleRemoveVariant = (index) => {
+    setFormData({
+      ...formData,
+      variants: formData.variants.filter((_, i) => i !== index),
     });
   };
 
