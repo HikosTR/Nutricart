@@ -97,7 +97,9 @@ const OrdersManagement = () => {
                   className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                   data-testid={`order-row-${index}`}
                 >
-                  <td className="py-4 px-6 text-sm font-mono">{order.id.slice(0, 8)}</td>
+                  <td className="py-4 px-6">
+                    <span className="text-sm font-mono font-bold text-[#78BE20]">{order.order_code}</span>
+                  </td>
                   <td className="py-4 px-6 text-sm">
                     <div>
                       <p className="font-medium text-gray-900">{order.customer_name}</p>
