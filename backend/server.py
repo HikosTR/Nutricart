@@ -406,7 +406,7 @@ async def get_testimonials():
             t['created_at'] = datetime.fromisoformat(t['created_at'])
     return testimonials
 
-@api_router.post("/testimonials", response_model=Testimonial)
+@api_router.post("/testimonials", response_model=Testimonial, status_code=status.HTTP_201_CREATED)
 async def create_testimonial(input: TestimonialCreate, admin: dict = Depends(get_current_admin)):
     testimonial = Testimonial(**input.model_dump())
     doc = testimonial.model_dump()
