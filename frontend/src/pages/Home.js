@@ -65,6 +65,13 @@ const Home = () => {
     });
   };
 
+  const isProductAvailable = (product) => {
+    if (!product.has_variants) {
+      return product.stock > 0;
+    }
+    return product.variants && product.variants.some(v => v.is_available && v.stock > 0);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-[#F9FCF8]">
       <TopBar />
