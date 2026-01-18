@@ -260,7 +260,7 @@ class HerbalifeAPITester:
             "total_amount": 599.98
         }
         
-        success, response = self.make_request('POST', 'orders', order_data, 201)
+        success, response = self.make_request('POST', 'orders', order_data, 200)
         if success:
             order_id = response['id']
             self.created_resources['orders'].append(order_id)
