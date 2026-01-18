@@ -86,6 +86,12 @@ const Checkout = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!formData.receipt_file_url) {
+      toast.error('Lütfen ödeme dekontunu yükleyin');
+      return;
+    }
+    
     setLoading(true);
 
     try {
