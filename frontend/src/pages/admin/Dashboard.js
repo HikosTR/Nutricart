@@ -14,10 +14,11 @@ import {
   LogOut,
   Menu,
   X,
+  Layers,
 } from 'lucide-react';
 import DashboardHome from './DashboardHome';
 import ProductsManagement from './ProductsManagement';
-import VideosManagement from './VideosManagement';
+import SliderManagement from './SliderManagement';
 import BannersManagement from './BannersManagement';
 import OrdersManagement from './OrdersManagement';
 import TestimonialsManagement from './TestimonialsManagement';
