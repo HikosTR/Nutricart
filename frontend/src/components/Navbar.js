@@ -152,6 +152,13 @@ const Navbar = () => {
               >
                 Ürünler
               </a>
+              <Link
+                to="/track-order"
+                className="block text-gray-700 hover:text-[#78BE20] font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Sipariş Takip
+              </Link>
               <a
                 href="#testimonials"
                 className="block text-gray-700 hover:text-[#78BE20] font-medium"
