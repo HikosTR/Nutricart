@@ -341,6 +341,200 @@ const ProductDetail = () => {
             </motion.div>
           </div>
         </div>
+
+        {/* Customer Reviews Section */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white rounded-3xl border border-gray-200 p-8"
+          >
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">
+                Müşteri Yorumları ({reviews.length})
+              </h2>
+              <button
+                onClick={() => setShowReviewForm(!showReviewForm)}
+                className="bg-[#78BE20] hover:bg-[#65A318] text-white px-6 py-3 rounded-full font-bold transition-all hover:scale-105"
+                data-testid="write-review-button"
+              >
+                Yorum Yaz
+              </button>
+            </div>
+
+            {/* Review Form */}
+            {showReviewForm && (
+              <motion.form
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                onSubmit={handleSubmitReview}
+                className="bg-gray-50 rounded-2xl p-6 mb-8 space-y-4"
+                data-testid="review-form"
+              >
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Adınız</label>
+                  <input
+                    type="text"
+                    value={reviewForm.customer_name}
+                    onChange={(e) => setReviewForm({ ...reviewForm, customer_name: e.target.value })}
+                    className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4"
+                    placeholder="Adınız Soyadınız"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Puanınız</label>
+                  <div className="flex space-x-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setReviewForm({ ...reviewForm, rating: star })}
+                        className="p-1"
+                      >
+                        <Star
+                          className={`w-8 h-8 ${
+                            star <= reviewForm.rating
+                              ? 'text-yellow-400 fill-yellow-400'
+                              : 'text-gray-300'
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Yorumunuz</label>
+                  <textarea
+                    value={reviewForm.comment}
+                    onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                    rows={4}
+                    className="w-full rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4 py-3"
+                    placeholder="Bu ürün hakkında ne düşünüyorsunuz?"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Fotoğraf Ekle (Opsiyonel)</label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleReviewImageUpload}
+                      className="hidden"
+                      id="review-image-upload"
+                    />
+                    <label
+                      htmlFor="review-image-upload"
+                      className={`flex items-center px-4 py-2 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
+                        uploading ? 'border-[#78BE20]' : 'border-gray-300 hover:border-[#78BE20]'
+                      }`}
+                    >
+                      {uploading ? (
+                        <Loader2 className="w-5 h-5 animate-spin text-[#78BE20]" />
+                      ) : (
+                        <>
+                          <Upload className="w-5 h-5 mr-2" />
+                          <span>Resim Yükle</span>
+                        </>
+                      )}
+                    </label>
+                    {reviewForm.image_url && (
+                      <div className="relative">
+                        <img src={reviewForm.image_url} alt="Preview" className="w-16 h-16 object-cover rounded-lg" />
+                        <button
+                          type="button"
+                          onClick={() => setReviewForm({ ...reviewForm, image_url: '' })}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowReviewForm(false)}
+                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-full font-bold"
+                  >
+                    İptal
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-[#78BE20] hover:bg-[#65A318] text-white py-3 rounded-full font-bold flex items-center justify-center gap-2"
+                  >
+                    <Send className="w-5 h-5" />
+                    Gönder
+                  </button>
+                </div>
+              </motion.form>
+            )}
+
+            {/* Reviews List */}
+            {reviews.length > 0 ? (
+              <div className="space-y-6">
+                {reviews.map((review, index) => (
+                  <motion.div
+                    key={review.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="border-b border-gray-100 pb-6 last:border-0"
+                    data-testid={`review-item-${index}`}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-full bg-[#78BE20]/10 flex items-center justify-center text-[#78BE20] font-bold text-lg">
+                        {review.customer_name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-bold text-gray-900">{review.customer_name}</h4>
+                          <div className="flex">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                className={`w-4 h-4 ${
+                                  star <= review.rating
+                                    ? 'text-yellow-400 fill-yellow-400'
+                                    : 'text-gray-300'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-gray-600 mb-3">{review.comment}</p>
+                        {review.image_url && (
+                          <img
+                            src={review.image_url}
+                            alt="Review"
+                            className="w-32 h-32 object-cover rounded-xl"
+                          />
+                        )}
+                        <p className="text-xs text-gray-400 mt-2">
+                          {new Date(review.created_at).toLocaleDateString('tr-TR')}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <Star className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+                <p className="text-gray-500">Henüz yorum yapılmamış</p>
+                <p className="text-sm text-gray-400">İlk yorumu siz yapın!</p>
+              </div>
+            )}
+          </motion.div>
+        </div>
       </div>
     </div>
   );
