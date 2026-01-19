@@ -7,6 +7,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import OrderTracking from './pages/OrderTracking';
 import TrackOrder from './pages/TrackOrder';
+import BlogDetail from './pages/BlogDetail';
 import AdminLogin from './pages/admin/Login';
 import AdminDashboard from './pages/admin/Dashboard';
 import WhatsAppButton from './components/WhatsAppButton';
@@ -24,6 +25,7 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/track-order" element={<TrackOrder />} />
             <Route path="/order/:orderId" element={<OrderTracking />} />
+            <Route path="/blog/:id" element={<BlogDetail />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
           </Routes>
