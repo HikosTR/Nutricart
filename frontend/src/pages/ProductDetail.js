@@ -4,7 +4,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import TopBar from '../components/TopBar';
-import { ShoppingCart, ArrowLeft, Package, Star } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Package, Star, Send, Image as ImageIcon, Upload, Loader2, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
 
@@ -17,10 +17,20 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [reviewForm, setReviewForm] = useState({
+    customer_name: '',
+    rating: 5,
+    comment: '',
+    image_url: '',
+  });
   const { addToCart } = useCart();
 
   useEffect(() => {
     fetchProduct();
+    fetchReviews();
   }, [id]);
 
   const fetchProduct = async () => {
@@ -33,6 +43,57 @@ const ProductDetail = () => {
     } catch (error) {
       console.error('Error fetching product:', error);
       toast.error('Ürün yüklenirken hata oluştu');
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`${API}/reviews/${id}`);
+      setReviews(response.data);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    }
+  };
+
+  const handleReviewImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post(`${API}/upload`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setReviewForm({ ...reviewForm, image_url: response.data.url });
+      toast.success('Resim yüklendi!');
+    } catch (error) {
+      toast.error('Resim yükleme başarısız');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    
+    if (!reviewForm.customer_name.trim() || !reviewForm.comment.trim()) {
+      toast.error('Lütfen adınızı ve yorumunuzu girin');
+      return;
+    }
+
+    try {
+      await axios.post(`${API}/reviews`, {
+        product_id: id,
+        ...reviewForm,
+      });
+      toast.success('Yorumunuz gönderildi! Onaylandıktan sonra görünecektir.');
+      setReviewForm({ customer_name: '', rating: 5, comment: '', image_url: '' });
+      setShowReviewForm(false);
+    } catch (error) {
+      toast.error('Yorum gönderilemedi');
     }
   };
 
