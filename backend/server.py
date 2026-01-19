@@ -452,7 +452,30 @@ async def get_banners():
     for b in banners:
         if isinstance(b.get('created_at'), str):
             b['created_at'] = datetime.fromisoformat(b['created_at'])
+        # Ensure blog fields exist
+        if 'is_blog' not in b:
+            b['is_blog'] = False
+        if 'blog_content' not in b:
+            b['blog_content'] = None
+        if 'blog_images' not in b:
+            b['blog_images'] = []
     return banners
+
+@api_router.get("/banners/{banner_id}", response_model=Banner)
+async def get_banner(banner_id: str):
+    banner = await db.banners.find_one({"id": banner_id}, {"_id": 0})
+    if not banner:
+        raise HTTPException(status_code=404, detail="Banner not found")
+    if isinstance(banner.get('created_at'), str):
+        banner['created_at'] = datetime.fromisoformat(banner['created_at'])
+    # Ensure blog fields exist
+    if 'is_blog' not in banner:
+        banner['is_blog'] = False
+    if 'blog_content' not in banner:
+        banner['blog_content'] = None
+    if 'blog_images' not in banner:
+        banner['blog_images'] = []
+    return banner
 
 @api_router.post("/banners", response_model=Banner, status_code=status.HTTP_201_CREATED)
 async def create_banner(input: BannerCreate, admin: dict = Depends(get_current_admin)):
