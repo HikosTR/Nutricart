@@ -240,8 +240,25 @@ const Home = () => {
             </p>
           </motion.div>
 
+          {/* Sıralama Seçenekleri */}
+          <div className="flex justify-end mb-8">
+            <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-md border border-gray-100">
+              <ArrowUpDown className="w-4 h-4 text-gray-500" />
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                className="bg-transparent text-sm font-medium text-gray-700 focus:outline-none cursor-pointer"
+                data-testid="sort-select"
+              >
+                <option value="default">Varsayılan Sıralama</option>
+                <option value="price-asc">Fiyat: Düşükten Yükseğe</option>
+                <option value="price-desc">Fiyat: Yüksekten Düşüğe</option>
+              </select>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.map((product, index) => {
+            {sortedProducts.map((product, index) => {
               const available = isProductAvailable(product);
               
               return (
