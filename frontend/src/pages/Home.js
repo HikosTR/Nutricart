@@ -287,8 +287,15 @@ const Home = () => {
                         </span>
                       </div>
                     )}
+                    {/* Kampanya Rozeti - Sağ Üst */}
+                    {product.is_campaign && (
+                      <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse shadow-lg">
+                        {product.campaign_text || 'KAMPANYA'}
+                      </div>
+                    )}
+                    {/* Paket Rozeti - Sol Üst (Kampanya varsa) */}
                     {product.is_package && (
-                      <div className="absolute top-4 right-4 bg-[#78BE20] text-white px-3 py-1 rounded-full text-sm font-bold">
+                      <div className={`absolute top-4 ${product.is_campaign ? 'left-4' : 'right-4'} bg-[#78BE20] text-white px-3 py-1 rounded-full text-sm font-bold`}>
                         Paket
                       </div>
                     )}
