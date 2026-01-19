@@ -53,6 +53,8 @@ const ProductsManagement = () => {
         ...formData,
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
+        display_order: parseInt(formData.display_order),
+        campaign_text: formData.is_campaign ? formData.campaign_text : null,
       };
 
       if (editingProduct) {
