@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   Layers,
+  Star,
 } from 'lucide-react';
 import DashboardHome from './DashboardHome';
 import ProductsManagement from './ProductsManagement';
@@ -22,6 +23,7 @@ import SliderManagement from './SliderManagement';
 import BannersManagement from './BannersManagement';
 import OrdersManagement from './OrdersManagement';
 import TestimonialsManagement from './TestimonialsManagement';
+import ReviewsManagement from './ReviewsManagement';
 import PaymentSettings from './PaymentSettings';
 import SiteSettings from './SiteSettings';
 
@@ -50,9 +52,10 @@ const Dashboard = () => {
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/products', icon: Package, label: 'Ürünler' },
     { path: '/admin/slider', icon: Layers, label: 'Slider' },
-    { path: '/admin/banners', icon: Image, label: "Banner'lar" },
+    { path: '/admin/banners', icon: Image, label: "Banner/Blog" },
     { path: '/admin/orders', icon: ShoppingCart, label: 'Siparişler' },
-    { path: '/admin/testimonials', icon: MessageSquare, label: 'Yorumlar' },
+    { path: '/admin/testimonials', icon: MessageSquare, label: 'Ana Sayfa Yorumları' },
+    { path: '/admin/product-reviews', icon: Star, label: 'Ürün Yorumları' },
     { path: '/admin/payment-settings', icon: CreditCard, label: 'Ödeme Ayarları' },
     { path: '/admin/site-settings', icon: Settings, label: 'Site Ayarları' },
   ];
