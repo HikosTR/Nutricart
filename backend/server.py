@@ -264,6 +264,7 @@ class SiteSettings(BaseModel):
     id: str = "site_settings"
     logo_url: str = "https://customer-assets.emergentagent.com/job_herbalife-shop-3/artifacts/51go848j_Ekran%20Resmi%202026-01-18%2004.46.44.png"
     topbar_message: str = "🚚 Kargo Ücretsizdir!"
+    whatsapp_number: str = "+90 542 140 07 55"
     footer_about: str = "Sağlıklı yaşamınız için doğru adres"
     footer_phone: str = "+90 542 140 07 55"
     footer_email: str = "info@herbalife.com"
@@ -272,6 +273,7 @@ class SiteSettings(BaseModel):
 class SiteSettingsUpdate(BaseModel):
     logo_url: str
     topbar_message: Optional[str] = None
+    whatsapp_number: Optional[str] = None
     footer_about: Optional[str] = None
     footer_phone: Optional[str] = None
     footer_email: Optional[str] = None
