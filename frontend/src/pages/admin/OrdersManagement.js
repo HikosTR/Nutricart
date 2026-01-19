@@ -83,6 +83,26 @@ const OrdersManagement = () => {
     }
   };
 
+  const deleteOrder = async (orderId, orderCode) => {
+    if (!window.confirm(`${orderCode} numaralı siparişi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`)) {
+      return;
+    }
+
+    const token = localStorage.getItem('admin_token');
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+
+    try {
+      await axios.delete(`${API}/orders/${orderId}`, config);
+      toast.success('Sipariş silindi');
+      fetchOrders();
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder(null);
+      }
+    } catch (error) {
+      toast.error('Silme başarısız');
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'pending':
