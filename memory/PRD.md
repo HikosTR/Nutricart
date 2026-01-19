@@ -6,11 +6,12 @@ Modern, mobil uyumlu, beyaz-yeşil-siyah renk temalı Herbalife ürünleri e-tic
 ## Temel Gereksinimler
 
 ### Ana Sayfa
-- ✅ Slider (Video veya Resim) - admin panelden yönetiliyor
+- ✅ Slider (Video veya Resim) - admin panelden yönetiliyor, PC'den resim yükleme
 - ✅ Kampanya banner'ı
 - ✅ Ürün kartları (spotlight stil)
 - ✅ Üst duyuru çubuğu (TopBar) - yeşil, siyah yazılı
 - ✅ Dinamik footer
+- ✅ **Ürün sıralama seçenekleri** (Varsayılan, Fiyat Artan, Fiyat Azalan)
 
 ### E-Ticaret Akışı
 - ✅ Ürün detay sayfası (varyant seçimi, resim değişimi)
@@ -18,15 +19,19 @@ Modern, mobil uyumlu, beyaz-yeşil-siyah renk temalı Herbalife ürünleri e-tic
 - ✅ Ödeme sayfası (Havale/EFT)
 - ✅ Sipariş takip sayfası (HRB-XXXXXX kodu ile)
 
-### Ürün Varyantları
+### Ürün Özellikleri
 - ✅ Her varyantın kendine özel resmi
 - ✅ Her varyantın stok durumu (is_available)
 - ✅ Stokta olmayan varyantlar devre dışı
 - ✅ Tüm varyantları tükenmiş ürünlerde "TÜKENDİ" rozeti
+- ✅ **Ürün sıralama numarası** (display_order) - admin'den belirlenir
+- ✅ **Kampanyalı ürün rozeti** - sağ üstte kırmızı rozet
 
 ### Admin Paneli
 - ✅ Ürün yönetimi (varyantlar dahil)
-- ✅ **Slider Yönetimi** (Video VEYA Resim seçeneği) ← YENİ
+- ✅ **Ürün sıralama numarası** (1, 2, 3...) 
+- ✅ **Kampanyalı ürün işaretleme** ve kampanya yazısı
+- ✅ Slider Yönetimi (Video VEYA Resim, PC'den yükleme)
 - ✅ Kampanya banner'ları
 - ✅ Müşteri yorumları
 - ✅ Site logosu
@@ -55,29 +60,21 @@ Modern, mobil uyumlu, beyaz-yeşil-siyah renk temalı Herbalife ürünleri e-tic
 - Axios (API çağrıları)
 
 ### Veritabanı Şemaları
-- **products**: name, description, price, image_url, is_package, variants[{name, image_url, is_available, stock}]
+- **products**: name, description, price, image_url, is_package, variants[], **display_order**, **is_campaign**, **campaign_text**
 - **videos (slider)**: title, media_type (video/image), youtube_url, image_url, order, active
 - **orders**: order_code (HRB-XXXXXX), customer_details, items, total_amount, status, payment_receipt_url
 - **settings**: logo_url, topbar_message, footer_about, footer_phone, footer_email, payment_settings
 
-## Tamamlanan İşler (18 Ocak 2026)
-1. ✅ TopBar menünün üstüne taşındı (z-50, fixed positioning)
-2. ✅ Tüm sayfalarda TopBar + Navbar düzeni uygulandı
-3. ✅ Dinamik footer içeriği admin panelinden yönetiliyor
-4. ✅ Stokta olmayan varyant sistemi çalışıyor
-5. ✅ **Slider Yönetimi** - Video veya Resim seçeneği eklendi
-6. ✅ Ana sayfada hem video hem resim slider desteği
+## Tamamlanan İşler (19 Ocak 2026)
+1. ✅ TopBar menünün üstüne taşındı
+2. ✅ Slider'a PC'den resim yükleme özelliği
+3. ✅ Ürün sıralama numarası (display_order)
+4. ✅ Kampanyalı ürün rozeti (is_campaign, campaign_text)
+5. ✅ Müşteri için sıralama seçenekleri (fiyat artan/azalan)
 
 ## Test Bilgileri
 - Admin: admin@herbalife.com / admin123
 - Test raporu: /app/test_reports/iteration_2.json
-- API testleri: /app/tests/test_herbalife_api.py
 
 ## Kalan Görevler
 - Şu an bekleyen görev yok
-
-## Gelecek İyileştirmeler (Öneriler)
-- Sipariş e-posta bildirimleri
-- Stok azaldığında admin uyarısı
-- Müşteri kayıt/giriş sistemi
-- Favori ürünler
