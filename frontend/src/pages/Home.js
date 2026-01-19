@@ -203,7 +203,13 @@ const Home = () => {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                   className="relative rounded-3xl overflow-hidden group cursor-pointer h-64"
-                  onClick={() => banner.link_url && window.open(banner.link_url, '_blank')}
+                  onClick={() => {
+                    if (banner.is_blog) {
+                      navigate(`/blog/${banner.id}`);
+                    } else if (banner.link_url) {
+                      window.open(banner.link_url, '_blank');
+                    }
+                  }}
                   data-testid={`banner-${index}`}
                 >
                   <img
@@ -212,9 +218,20 @@ const Home = () => {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                  {/* Blog Badge */}
+                  {banner.is_blog && (
+                    <div className="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                      Blog
+                    </div>
+                  )}
                   <div className="absolute bottom-0 left-0 right-0 p-8">
                     <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{banner.title}</h3>
                     <p className="text-white/90">{banner.description}</p>
+                    {banner.is_blog && (
+                      <span className="inline-block mt-3 text-[#78BE20] font-medium">
+                        Devamını Oku →
+                      </span>
+                    )}
                   </div>
                 </motion.div>
               ))}
