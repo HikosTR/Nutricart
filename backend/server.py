@@ -163,6 +163,10 @@ class Banner(BaseModel):
     image_url: str
     link_url: Optional[str] = None
     active: bool = True
+    # Blog fields
+    is_blog: bool = False
+    blog_content: Optional[str] = None
+    blog_images: Optional[List[str]] = []
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class BannerCreate(BaseModel):
@@ -171,6 +175,9 @@ class BannerCreate(BaseModel):
     image_url: str
     link_url: Optional[str] = None
     active: bool = True
+    is_blog: bool = False
+    blog_content: Optional[str] = None
+    blog_images: Optional[List[str]] = []
 
 class BannerUpdate(BaseModel):
     title: Optional[str] = None
@@ -178,6 +185,9 @@ class BannerUpdate(BaseModel):
     image_url: Optional[str] = None
     link_url: Optional[str] = None
     active: Optional[bool] = None
+    is_blog: Optional[bool] = None
+    blog_content: Optional[str] = None
+    blog_images: Optional[List[str]] = None
 
 class OrderItem(BaseModel):
     product_id: str
