@@ -1,4 +1,4 @@
-import { ShoppingCart, Instagram, Menu, X } from 'lucide-react';
+import { ShoppingCart, Instagram, Menu, X, Phone } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,6 +13,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [logoUrl, setLogoUrl] = useState('https://customer-assets.emergentagent.com/job_herbalife-shop-3/artifacts/51go848j_Ekran%20Resmi%202026-01-18%2004.46.44.png');
+  const [whatsappNumber, setWhatsappNumber] = useState('+90 542 140 07 55');
   const cartCount = getCartCount();
 
   useEffect(() => {
@@ -23,9 +24,17 @@ const Navbar = () => {
     try {
       const response = await axios.get(`${API}/site-settings`);
       setLogoUrl(response.data.logo_url);
+      if (response.data.whatsapp_number) {
+        setWhatsappNumber(response.data.whatsapp_number);
+      }
     } catch (error) {
       console.error('Error fetching site settings:', error);
     }
+  };
+
+  const getWhatsAppLink = () => {
+    const cleanNumber = whatsappNumber.replace(/\s+/g, '').replace(/[^0-9+]/g, '');
+    return `https://wa.me/${cleanNumber.replace('+', '')}`;
   };
 
   return (
