@@ -444,6 +444,26 @@ const Home = () => {
               </ul>
             </div>
             <div>
+              <h4 className="font-bold mb-4">Yasal</h4>
+              <ul className="space-y-2">
+                <li>
+                  <a href="/sayfa/iade-degisim" className="text-gray-400 hover:text-[#78BE20] transition-colors">
+                    İade & Değişim
+                  </a>
+                </li>
+                <li>
+                  <a href="/sayfa/mesafeli-satis" className="text-gray-400 hover:text-[#78BE20] transition-colors">
+                    Mesafeli Satış Sözleşmesi
+                  </a>
+                </li>
+                <li>
+                  <a href="/sayfa/gizlilik" className="text-gray-400 hover:text-[#78BE20] transition-colors">
+                    KVKK & Gizlilik
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
               <h4 className="font-bold mb-4">Bize Ulaşın</h4>
               <p className="text-gray-400">
                 WhatsApp: {siteSettings?.whatsapp_number || siteSettings?.footer_phone || '+90 542 140 07 55'}
@@ -453,10 +473,15 @@ const Home = () => {
                   Email: {siteSettings.footer_email}
                 </p>
               )}
+              {siteSettings?.company_name && (
+                <p className="text-gray-400 mt-4 text-sm">
+                  {siteSettings.company_name}
+                </p>
+              )}
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 HerbaLife. Tüm hakları saklıdır.</p>
+            <p>&copy; 2025 {siteSettings?.company_name || 'HerbaLife'}. Tüm hakları saklıdır.</p>
           </div>
         </div>
       </footer>
