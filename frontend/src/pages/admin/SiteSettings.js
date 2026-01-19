@@ -110,6 +110,24 @@ const SiteSettings = () => {
             </p>
           </div>
 
+          {/* WhatsApp Number */}
+          <div className="border-2 border-dashed border-green-200 rounded-xl p-4 bg-green-50/50">
+            <label className="block text-sm font-medium text-green-700 mb-2">
+              📱 WhatsApp Numarası (Menüde Görünür)
+            </label>
+            <input
+              type="text"
+              value={formData.whatsapp_number}
+              onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
+              className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4"
+              placeholder="+90 542 140 07 55"
+              data-testid="whatsapp-number-input"
+            />
+            <p className="text-xs text-gray-500 mt-2">
+              Menüde yeşil WhatsApp butonunda gösterilir
+            </p>
+          </div>
+
           <div className="border-t pt-6">
             <h3 className="font-bold text-gray-900 mb-4">Footer Ayarları</h3>
             
