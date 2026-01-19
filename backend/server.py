@@ -67,6 +67,9 @@ class Product(BaseModel):
     is_package: bool = False
     has_variants: bool = False
     variants: Optional[List[ProductVariant]] = []
+    display_order: int = 0
+    is_campaign: bool = False
+    campaign_text: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ProductCreate(BaseModel):
@@ -79,6 +82,9 @@ class ProductCreate(BaseModel):
     is_package: bool = False
     has_variants: bool = False
     variants: Optional[List[ProductVariant]] = []
+    display_order: int = 0
+    is_campaign: bool = False
+    campaign_text: Optional[str] = None
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
@@ -90,6 +96,9 @@ class ProductUpdate(BaseModel):
     is_package: Optional[bool] = None
     has_variants: Optional[bool] = None
     variants: Optional[List[ProductVariant]] = None
+    display_order: Optional[int] = None
+    is_campaign: Optional[bool] = None
+    campaign_text: Optional[str] = None
 
 class Slide(BaseModel):
     model_config = ConfigDict(extra="ignore")
