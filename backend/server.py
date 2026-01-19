@@ -268,6 +268,18 @@ class SiteSettings(BaseModel):
     footer_about: str = "Sağlıklı yaşamınız için doğru adres"
     footer_phone: str = "+90 542 140 07 55"
     footer_email: str = "info@herbalife.com"
+    # Popup settings
+    popup_enabled: bool = False
+    popup_image_url: Optional[str] = None
+    popup_title: Optional[str] = None
+    popup_content: Optional[str] = None
+    # Legal & Company info
+    company_name: Optional[str] = "Herbalife Türkiye"
+    company_address: Optional[str] = None
+    company_tax_number: Optional[str] = None
+    return_policy: Optional[str] = None
+    sales_agreement: Optional[str] = None
+    privacy_policy: Optional[str] = None
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class SiteSettingsUpdate(BaseModel):
@@ -277,6 +289,40 @@ class SiteSettingsUpdate(BaseModel):
     footer_about: Optional[str] = None
     footer_phone: Optional[str] = None
     footer_email: Optional[str] = None
+    # Popup settings
+    popup_enabled: Optional[bool] = None
+    popup_image_url: Optional[str] = None
+    popup_title: Optional[str] = None
+    popup_content: Optional[str] = None
+    # Legal & Company info
+    company_name: Optional[str] = None
+    company_address: Optional[str] = None
+    company_tax_number: Optional[str] = None
+    return_policy: Optional[str] = None
+    sales_agreement: Optional[str] = None
+    privacy_policy: Optional[str] = None
+
+# Product Review Model
+class ProductReview(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    product_id: str
+    customer_name: str
+    rating: int = 5
+    comment: str
+    image_url: Optional[str] = None
+    approved: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ProductReviewCreate(BaseModel):
+    product_id: str
+    customer_name: str
+    rating: int = 5
+    comment: str
+    image_url: Optional[str] = None
+
+class ProductReviewUpdate(BaseModel):
+    approved: Optional[bool] = None
 
 # Auth helpers
 def hash_password(password: str) -> str:
