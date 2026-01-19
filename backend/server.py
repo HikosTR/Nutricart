@@ -323,10 +323,17 @@ async def login_admin(input: AdminLogin):
 @api_router.get("/products", response_model=List[Product])
 async def get_products(is_package: Optional[bool] = None):
     query = {} if is_package is None else {"is_package": is_package}
-    products = await db.products.find(query, {"_id": 0}).to_list(1000)
+    products = await db.products.find(query, {"_id": 0}).sort("display_order", 1).to_list(1000)
     for p in products:
         if isinstance(p.get('created_at'), str):
             p['created_at'] = datetime.fromisoformat(p['created_at'])
+        # Ensure new fields exist for backward compatibility
+        if 'display_order' not in p:
+            p['display_order'] = 0
+        if 'is_campaign' not in p:
+            p['is_campaign'] = False
+        if 'campaign_text' not in p:
+            p['campaign_text'] = None
     return products
 
 @api_router.get("/products/{product_id}", response_model=Product)
