@@ -273,13 +273,24 @@ const OrdersManagement = () => {
                       {new Date(order.created_at).toLocaleDateString('tr-TR')}
                     </td>
                     <td className="py-4 px-6">
-                      <button
-                        onClick={() => setSelectedOrder(order)}
-                        className="text-[#78BE20] hover:text-[#65A318] transition-colors"
-                        data-testid={`view-order-${index}`}
-                      >
-                        <Eye className="w-5 h-5" />
-                      </button>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => setSelectedOrder(order)}
+                          className="text-[#78BE20] hover:text-[#65A318] transition-colors p-1"
+                          data-testid={`view-order-${index}`}
+                          title="Detay Görüntüle"
+                        >
+                          <Eye className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => deleteOrder(order.id, order.order_code)}
+                          className="text-red-500 hover:text-red-700 transition-colors p-1"
+                          data-testid={`delete-order-${index}`}
+                          title="Siparişi Sil"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
                     </td>
                   </motion.tr>
                 ))
