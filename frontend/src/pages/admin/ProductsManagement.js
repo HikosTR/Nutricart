@@ -187,7 +187,19 @@ const ProductsManagement = () => {
             className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
             data-testid={`product-item-${index}`}
           >
-            <img src={product.image_url} alt={product.name} className="w-full h-48 object-cover" />
+            <div className="relative">
+              <img src={product.image_url} alt={product.name} className="w-full h-48 object-cover" />
+              {/* Sıra Numarası */}
+              <div className="absolute top-3 left-3 bg-black/70 text-white px-2 py-1 rounded-lg text-xs font-bold">
+                Sıra: {product.display_order || 0}
+              </div>
+              {/* Kampanya Rozeti */}
+              {product.is_campaign && (
+                <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold animate-pulse">
+                  {product.campaign_text || 'KAMPANYA'}
+                </div>
+              )}
+            </div>
             <div className="p-4">
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-bold text-gray-900 line-clamp-2">{product.name}</h3>
