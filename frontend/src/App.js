@@ -8,9 +8,11 @@ import Checkout from './pages/Checkout';
 import OrderTracking from './pages/OrderTracking';
 import TrackOrder from './pages/TrackOrder';
 import BlogDetail from './pages/BlogDetail';
+import LegalPage from './pages/LegalPage';
 import AdminLogin from './pages/admin/Login';
 import AdminDashboard from './pages/admin/Dashboard';
 import WhatsAppButton from './components/WhatsAppButton';
+import WelcomePopup from './components/WelcomePopup';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -18,6 +20,7 @@ function App() {
     <CartProvider>
       <BrowserRouter>
         <div className="App">
+          <WelcomePopup />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/product/:id" element={<ProductDetail />} />
@@ -26,6 +29,7 @@ function App() {
             <Route path="/track-order" element={<TrackOrder />} />
             <Route path="/order/:orderId" element={<OrderTracking />} />
             <Route path="/blog/:id" element={<BlogDetail />} />
+            <Route path="/sayfa/:type" element={<LegalPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
           </Routes>
