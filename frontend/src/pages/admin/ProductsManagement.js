@@ -21,6 +21,9 @@ const ProductsManagement = () => {
     is_package: false,
     has_variants: false,
     variants: [],
+    display_order: 0,
+    is_campaign: false,
+    campaign_text: '',
   });
   const [newVariantName, setNewVariantName] = useState('');
   const [newVariantStock, setNewVariantStock] = useState(100);
