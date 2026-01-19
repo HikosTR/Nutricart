@@ -99,6 +99,9 @@ const ProductsManagement = () => {
       is_package: product.is_package,
       has_variants: product.has_variants || false,
       variants: product.variants || [],
+      display_order: product.display_order || 0,
+      is_campaign: product.is_campaign || false,
+      campaign_text: product.campaign_text || '',
     });
     setShowModal(true);
   };
@@ -116,6 +119,9 @@ const ProductsManagement = () => {
       is_package: false,
       has_variants: false,
       variants: [],
+      display_order: 0,
+      is_campaign: false,
+      campaign_text: '',
     });
     setNewVariantName('');
     setNewVariantStock(100);
