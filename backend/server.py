@@ -554,6 +554,13 @@ async def update_order(order_id: str, input: OrderUpdate, admin: dict = Depends(
         updated['created_at'] = datetime.fromisoformat(updated['created_at'])
     return updated
 
+@api_router.delete("/orders/{order_id}")
+async def delete_order(order_id: str, admin: dict = Depends(get_current_admin)):
+    result = await db.orders.delete_one({"id": order_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"message": "Order deleted"}
+
 # Testimonial Routes
 @api_router.get("/testimonials", response_model=List[Testimonial])
 async def get_testimonials():
