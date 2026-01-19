@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 import TopBar from '../components/TopBar';
-import { Play, ShoppingBag, Star, ArrowRight, Sparkles } from 'lucide-react';
+import { Play, ShoppingBag, Star, ArrowRight, Sparkles, ArrowUpDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
@@ -15,6 +15,8 @@ const Home = () => {
   const [videos, setVideos] = useState([]);
   const [banners, setBanners] = useState([]);
   const [products, setProducts] = useState([]);
+  const [sortedProducts, setSortedProducts] = useState([]);
+  const [sortOption, setSortOption] = useState('default');
   const [testimonials, setTestimonials] = useState([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [siteSettings, setSiteSettings] = useState(null);
@@ -25,6 +27,26 @@ const Home = () => {
     fetchData();
     fetchSiteSettings();
   }, []);
+
+  // Sort products when sort option changes
+  useEffect(() => {
+    if (products.length > 0) {
+      let sorted = [...products];
+      switch (sortOption) {
+        case 'price-asc':
+          sorted.sort((a, b) => a.price - b.price);
+          break;
+        case 'price-desc':
+          sorted.sort((a, b) => b.price - a.price);
+          break;
+        case 'default':
+        default:
+          sorted.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+          break;
+      }
+      setSortedProducts(sorted);
+    }
+  }, [products, sortOption]);
 
   const fetchSiteSettings = async () => {
     try {
