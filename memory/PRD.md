@@ -7,74 +7,59 @@ Modern, mobil uyumlu, beyaz-yeşil-siyah renk temalı Herbalife ürünleri e-tic
 
 ### Ana Sayfa
 - ✅ Slider (Video veya Resim) - admin panelden yönetiliyor, PC'den resim yükleme
-- ✅ Kampanya banner'ı
+- ✅ **Banner / Blog Sistemi** - Banner'lara tıklandığında blog sayfası açılabilir
 - ✅ Ürün kartları (spotlight stil)
-- ✅ Üst duyuru çubuğu (TopBar) - yeşil, siyah yazılı
-- ✅ Dinamik footer
-- ✅ **Ürün sıralama seçenekleri** (Varsayılan, Fiyat Artan, Fiyat Azalan)
+- ✅ Üst duyuru çubuğu (TopBar)
+- ✅ Dinamik footer (logo dahil)
+- ✅ Ürün sıralama seçenekleri
+- ✅ **WhatsApp butonu menüde** (numara ile birlikte)
+
+### Blog Sistemi
+- ✅ Banner'lar blog olarak kullanılabilir
+- ✅ Blog içeriği yazma alanı
+- ✅ Blog galeri görselleri
+- ✅ Tıklandığında blog detay sayfası açılır
+- ✅ "Devamını Oku" linki
 
 ### E-Ticaret Akışı
 - ✅ Ürün detay sayfası (varyant seçimi, resim değişimi)
-- ✅ Sepet sayfası (ekleme/çıkarma, miktar ayarlama)
+- ✅ Sepet sayfası
 - ✅ Ödeme sayfası (Havale/EFT)
-- ✅ Sipariş takip sayfası (HRB-XXXXXX kodu ile)
+- ✅ Sipariş takip sayfası (HRB-XXXXXX kodu)
 
 ### Ürün Özellikleri
-- ✅ Her varyantın kendine özel resmi
-- ✅ Her varyantın stok durumu (is_available)
-- ✅ Stokta olmayan varyantlar devre dışı
-- ✅ Tüm varyantları tükenmiş ürünlerde "TÜKENDİ" rozeti
-- ✅ **Ürün sıralama numarası** (display_order) - admin'den belirlenir
-- ✅ **Kampanyalı ürün rozeti** - sağ üstte kırmızı rozet
+- ✅ Ürün varyantları (kendi resimleri)
+- ✅ Stok durumu (is_available)
+- ✅ "TÜKENDİ" rozeti
+- ✅ Sıralama numarası (display_order)
+- ✅ Kampanya rozeti
 
 ### Admin Paneli
-- ✅ Ürün yönetimi (varyantlar dahil)
-- ✅ **Ürün sıralama numarası** (1, 2, 3...) 
-- ✅ **Kampanyalı ürün işaretleme** ve kampanya yazısı
-- ✅ Slider Yönetimi (Video VEYA Resim, PC'den yükleme)
-- ✅ Kampanya banner'ları
-- ✅ Müşteri yorumları
-- ✅ Site logosu
-- ✅ IBAN/ödeme bilgileri
-- ✅ Üst duyuru çubuğu mesajı
-- ✅ Footer içeriği (hakkında, telefon, e-posta)
-- ✅ Sipariş yönetimi (makbuz görüntüleme)
+- ✅ Ürün yönetimi
+- ✅ **Banner / Blog Yönetimi** - Blog içeriği yazma, galeri
+- ✅ Slider Yönetimi (Video/Resim)
+- ✅ Site Ayarları (Logo, WhatsApp, TopBar, Footer)
+- ✅ Sipariş yönetimi
 
-### Ödeme Sistemi
-- ✅ Site sahibi IBAN bilgileri admin panelinden yönetiliyor
-- ✅ Müşteri ödeme makbuzu yüklemeli (resim/PDF)
-- ✅ Makbuzlar admin panelinde görüntülenebilir
+### Site Ayarları
+- ✅ Logo (menü ve footer'da aynı)
+- ✅ **WhatsApp numarası** (menüde görünür)
+- ✅ TopBar mesajı
+- ✅ Footer içeriği
 
 ## Teknik Mimari
-
-### Backend
-- FastAPI
-- MongoDB (Motor async driver)
-- JWT kimlik doğrulama
-- Dosya yükleme (/api/upload)
-
-### Frontend
-- React
-- Tailwind CSS
-- Framer Motion (animasyonlar)
-- Axios (API çağrıları)
-
-### Veritabanı Şemaları
-- **products**: name, description, price, image_url, is_package, variants[], **display_order**, **is_campaign**, **campaign_text**
-- **videos (slider)**: title, media_type (video/image), youtube_url, image_url, order, active
-- **orders**: order_code (HRB-XXXXXX), customer_details, items, total_amount, status, payment_receipt_url
-- **settings**: logo_url, topbar_message, footer_about, footer_phone, footer_email, payment_settings
+- **Backend:** FastAPI, MongoDB, JWT
+- **Frontend:** React, Tailwind CSS, Framer Motion
 
 ## Tamamlanan İşler (19 Ocak 2026)
-1. ✅ TopBar menünün üstüne taşındı
-2. ✅ Slider'a PC'den resim yükleme özelliği
-3. ✅ Ürün sıralama numarası (display_order)
-4. ✅ Kampanyalı ürün rozeti (is_campaign, campaign_text)
-5. ✅ Müşteri için sıralama seçenekleri (fiyat artan/azalan)
+1. ✅ Banner'ları blog olarak kullanma özelliği
+2. ✅ Blog detay sayfası (/blog/:id)
+3. ✅ Menüde WhatsApp butonu + numara
+4. ✅ Footer'da logo (menüdeki ile aynı)
+5. ✅ Admin panelde WhatsApp numarası ayarı
 
 ## Test Bilgileri
 - Admin: admin@herbalife.com / admin123
-- Test raporu: /app/test_reports/iteration_2.json
 
 ## Kalan Görevler
 - Şu an bekleyen görev yok
