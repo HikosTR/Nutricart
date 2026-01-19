@@ -411,9 +411,19 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-2xl font-black mb-4">
-                <span className="text-[#78BE20]">Herba</span>Life
-              </h3>
+              {/* Footer Logo - Same as Navbar */}
+              {siteSettings?.logo_url ? (
+                <img 
+                  src={siteSettings.logo_url} 
+                  alt="Logo" 
+                  className="h-14 object-contain mb-4"
+                  data-testid="footer-logo"
+                />
+              ) : (
+                <h3 className="text-2xl font-black mb-4">
+                  <span className="text-[#78BE20]">Herba</span>Life
+                </h3>
+              )}
               <p className="text-gray-400">
                 {siteSettings?.footer_about || 'Sağlıklı yaşamınız için doğru adres'}
               </p>
@@ -436,7 +446,7 @@ const Home = () => {
             <div>
               <h4 className="font-bold mb-4">Bize Ulaşın</h4>
               <p className="text-gray-400">
-                WhatsApp: {siteSettings?.footer_phone || '+90 542 140 07 55'}
+                WhatsApp: {siteSettings?.whatsapp_number || siteSettings?.footer_phone || '+90 542 140 07 55'}
               </p>
               {siteSettings?.footer_email && (
                 <p className="text-gray-400 mt-2">
