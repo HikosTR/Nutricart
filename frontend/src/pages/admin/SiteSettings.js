@@ -12,6 +12,7 @@ const SiteSettings = () => {
   const [formData, setFormData] = useState({
     logo_url: '',
     topbar_message: '',
+    whatsapp_number: '',
     footer_about: '',
     footer_phone: '',
     footer_email: '',
@@ -27,6 +28,7 @@ const SiteSettings = () => {
       setFormData({
         logo_url: response.data.logo_url,
         topbar_message: response.data.topbar_message || '',
+        whatsapp_number: response.data.whatsapp_number || '',
         footer_about: response.data.footer_about || '',
         footer_phone: response.data.footer_phone || '',
         footer_email: response.data.footer_email || '',
