@@ -334,6 +334,49 @@ const ProductsManagement = () => {
                   />
                 </div>
 
+                {/* Sıralama Numarası */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Sıralama Numarası</label>
+                  <input
+                    type="number"
+                    value={formData.display_order}
+                    onChange={(e) => setFormData({ ...formData, display_order: e.target.value })}
+                    className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4"
+                    placeholder="1, 2, 3..."
+                    data-testid="product-display-order-input"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Düşük sayı önce gösterilir (1 = en üstte)</p>
+                </div>
+
+                {/* Kampanya Ayarları */}
+                <div className="border-2 border-dashed border-orange-200 rounded-xl p-4 bg-orange-50/50">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_campaign}
+                      onChange={(e) => setFormData({ ...formData, is_campaign: e.target.checked })}
+                      className="w-5 h-5 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
+                      data-testid="product-is-campaign-checkbox"
+                    />
+                    <label className="text-sm font-medium text-orange-700">🔥 Kampanyalı Ürün</label>
+                  </div>
+                  
+                  {formData.is_campaign && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Kampanya Yazısı</label>
+                      <input
+                        type="text"
+                        value={formData.campaign_text}
+                        onChange={(e) => setFormData({ ...formData, campaign_text: e.target.value })}
+                        className="w-full h-10 rounded-lg border-gray-200 focus:border-orange-500 focus:ring-orange-500/20 px-4"
+                        placeholder="örn: %20 İNDİRİM, FIRSATI KAÇIRMA"
+                        data-testid="product-campaign-text-input"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Ürün görselinin sağ üstünde gösterilir</p>
+                    </div>
+                  )}
+                </div>
+
                 <div className="flex items-center space-x-3">
                   <input
                     type="checkbox"
