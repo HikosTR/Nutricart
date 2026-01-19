@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { Package, Eye, Search, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Package, Eye, Search, ChevronLeft, ChevronRight, X, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
