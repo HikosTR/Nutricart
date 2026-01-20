@@ -35,6 +35,7 @@ class Admin(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     email: EmailStr
     password_hash: str
+    role: str = "Admin"  # "Yönetici" (Super Admin) or "Admin"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class AdminLogin(BaseModel):
@@ -44,6 +45,18 @@ class AdminLogin(BaseModel):
 class AdminCreate(BaseModel):
     email: EmailStr
     password: str
+    role: str = "Admin"
+
+class AdminUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    role: Optional[str] = None
+
+class AdminResponse(BaseModel):
+    id: str
+    email: EmailStr
+    role: str
+    created_at: datetime
 
 class Token(BaseModel):
     token: str
