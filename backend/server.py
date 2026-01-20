@@ -392,9 +392,10 @@ def hash_password(password: str) -> str:
 def verify_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
-def create_token(email: str) -> str:
+def create_token(email: str, role: str = "Admin") -> str:
     payload = {
         'email': email,
+        'role': role,
         'exp': datetime.now(timezone.utc) + timedelta(days=7)
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
@@ -408,11 +409,20 @@ async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(
         admin = await db.admins.find_one({"email": email}, {"_id": 0})
         if not admin:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Admin not found")
+        # Ensure role field exists
+        if 'role' not in admin:
+            admin['role'] = 'Admin'
         return admin
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+async def require_super_admin(admin: dict = Depends(get_current_admin)):
+    """Dependency that requires Yönetici (Super Admin) role"""
+    if admin.get('role') != 'Yönetici':
+        raise HTTPException(status_code=403, detail="Bu işlem için Yönetici yetkisi gereklidir")
+    return admin
 
 # Auth Routes
 @api_router.post("/auth/register", response_model=Token, status_code=status.HTTP_201_CREATED)
@@ -421,22 +431,103 @@ async def register_admin(input: AdminCreate):
     if existing:
         raise HTTPException(status_code=400, detail="Admin already exists")
     
-    admin = Admin(email=input.email, password_hash=hash_password(input.password))
+    admin = Admin(email=input.email, password_hash=hash_password(input.password), role=input.role)
     doc = admin.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.admins.insert_one(doc)
     
-    token = create_token(input.email)
+    token = create_token(input.email, input.role)
     return Token(token=token)
 
-@api_router.post("/auth/login", response_model=Token)
+@api_router.post("/auth/login")
 async def login_admin(input: AdminLogin):
     admin = await db.admins.find_one({"email": input.email}, {"_id": 0})
     if not admin or not verify_password(input.password, admin['password_hash']):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    token = create_token(input.email)
-    return Token(token=token)
+    role = admin.get('role', 'Admin')
+    token = create_token(input.email, role)
+    return {"token": token, "token_type": "bearer", "role": role}
+
+@api_router.get("/auth/me")
+async def get_current_user(admin: dict = Depends(get_current_admin)):
+    return {
+        "id": admin.get('id'),
+        "email": admin.get('email'),
+        "role": admin.get('role', 'Admin')
+    }
+
+# Admin User Management Routes (Only for Yönetici)
+@api_router.get("/admins", response_model=List[AdminResponse])
+async def get_all_admins(admin: dict = Depends(require_super_admin)):
+    admins = await db.admins.find({}, {"_id": 0, "password_hash": 0}).to_list(100)
+    for a in admins:
+        if isinstance(a.get('created_at'), str):
+            a['created_at'] = datetime.fromisoformat(a['created_at'])
+        if 'role' not in a:
+            a['role'] = 'Admin'
+    return admins
+
+@api_router.post("/admins", response_model=AdminResponse, status_code=status.HTTP_201_CREATED)
+async def create_admin_user(input: AdminCreate, admin: dict = Depends(require_super_admin)):
+    existing = await db.admins.find_one({"email": input.email}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Bu e-posta ile kayıtlı kullanıcı var")
+    
+    new_admin = Admin(email=input.email, password_hash=hash_password(input.password), role=input.role)
+    doc = new_admin.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.admins.insert_one(doc)
+    
+    return AdminResponse(
+        id=new_admin.id,
+        email=new_admin.email,
+        role=new_admin.role,
+        created_at=new_admin.created_at
+    )
+
+@api_router.put("/admins/{admin_id}", response_model=AdminResponse)
+async def update_admin_user(admin_id: str, input: AdminUpdate, admin: dict = Depends(require_super_admin)):
+    existing = await db.admins.find_one({"id": admin_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+    
+    # Prevent changing own role or super admin password by non-super admin
+    if existing['id'] == admin['id'] and input.role and input.role != admin.get('role'):
+        raise HTTPException(status_code=400, detail="Kendi rolünüzü değiştiremezsiniz")
+    
+    update_data = {}
+    if input.email:
+        update_data['email'] = input.email
+    if input.password:
+        update_data['password_hash'] = hash_password(input.password)
+    if input.role:
+        update_data['role'] = input.role
+    
+    if update_data:
+        await db.admins.update_one({"id": admin_id}, {"$set": update_data})
+    
+    updated = await db.admins.find_one({"id": admin_id}, {"_id": 0, "password_hash": 0})
+    if isinstance(updated.get('created_at'), str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    if 'role' not in updated:
+        updated['role'] = 'Admin'
+    return updated
+
+@api_router.delete("/admins/{admin_id}")
+async def delete_admin_user(admin_id: str, admin: dict = Depends(require_super_admin)):
+    existing = await db.admins.find_one({"id": admin_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+    
+    # Prevent deleting yourself
+    if existing['id'] == admin['id']:
+        raise HTTPException(status_code=400, detail="Kendinizi silemezsiniz")
+    
+    result = await db.admins.delete_one({"id": admin_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+    return {"message": "Kullanıcı silindi"}
 
 # Product Routes
 @api_router.get("/products", response_model=List[Product])
