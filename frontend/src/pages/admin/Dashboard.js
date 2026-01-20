@@ -172,6 +172,7 @@ const Dashboard = () => {
             <Route path="product-reviews" element={<ReviewsManagement />} />
             <Route path="payment-settings" element={<PaymentSettings />} />
             <Route path="site-settings" element={<SiteSettings />} />
+            <Route path="users" element={<UserManagement />} />
             <Route path="*" element={<DashboardHome />} />
           </Routes>
         </div>
