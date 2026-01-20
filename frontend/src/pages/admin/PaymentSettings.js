@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { CreditCard, Save, Banknote, AlertCircle } from 'lucide-react';
+import { CreditCard, Save, Banknote, AlertCircle, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -16,9 +16,15 @@ const PaymentSettings = () => {
     bank_name: '',
     card_payment_enabled: false,
     card_payment_provider: '',
-    card_api_key: '',
-    card_secret_key: '',
-    card_merchant_id: '',
+    // Iyzico
+    iyzico_api_key: '',
+    iyzico_secret_key: '',
+    iyzico_sandbox: true,
+    // PayTR
+    paytr_merchant_id: '',
+    paytr_merchant_key: '',
+    paytr_merchant_salt: '',
+    paytr_sandbox: true,
   });
 
   useEffect(() => {
@@ -34,9 +40,13 @@ const PaymentSettings = () => {
         bank_name: response.data.bank_name || '',
         card_payment_enabled: response.data.card_payment_enabled || false,
         card_payment_provider: response.data.card_payment_provider || '',
-        card_api_key: response.data.card_api_key || '',
-        card_secret_key: response.data.card_secret_key || '',
-        card_merchant_id: response.data.card_merchant_id || '',
+        iyzico_api_key: response.data.iyzico_api_key || '',
+        iyzico_secret_key: response.data.iyzico_secret_key || '',
+        iyzico_sandbox: response.data.iyzico_sandbox !== false,
+        paytr_merchant_id: response.data.paytr_merchant_id || '',
+        paytr_merchant_key: response.data.paytr_merchant_key || '',
+        paytr_merchant_salt: response.data.paytr_merchant_salt || '',
+        paytr_sandbox: response.data.paytr_sandbox !== false,
       });
     } catch (error) {
       console.error('Error fetching settings:', error);
@@ -76,6 +86,7 @@ const PaymentSettings = () => {
               ? 'bg-[#78BE20] text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
+          data-testid="bank-tab"
         >
           <Banknote className="w-4 h-4" />
           <span>Havale / EFT</span>
@@ -87,6 +98,7 @@ const PaymentSettings = () => {
               ? 'bg-[#78BE20] text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
+          data-testid="card-tab"
         >
           <CreditCard className="w-4 h-4" />
           <span>Kredi / Banka Kartı</span>
@@ -123,6 +135,7 @@ const PaymentSettings = () => {
                   required
                   className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4"
                   placeholder="Herbalife Türkiye"
+                  data-testid="account-holder-input"
                 />
               </div>
 
@@ -137,6 +150,7 @@ const PaymentSettings = () => {
                   required
                   className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4 font-mono"
                   placeholder="TR00 0000 0000 0000 0000 0000 00"
+                  data-testid="iban-input"
                 />
               </div>
 
@@ -150,6 +164,7 @@ const PaymentSettings = () => {
                   onChange={(e) => setFormData({ ...formData, bank_name: e.target.value })}
                   className="w-full h-12 rounded-xl border-gray-200 focus:border-[#78BE20] focus:ring-[#78BE20]/20 px-4"
                   placeholder="Türkiye İş Bankası"
+                  data-testid="bank-name-input"
                 />
               </div>
             </div>
@@ -164,7 +179,7 @@ const PaymentSettings = () => {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-gray-900">Kredi / Banka Kartı</h2>
-                  <p className="text-sm text-gray-600">iyzico veya PayTR entegrasyonu</p>
+                  <p className="text-sm text-gray-600">iyzico ve/veya PayTR entegrasyonu</p>
                 </div>
               </div>
 
@@ -176,6 +191,7 @@ const PaymentSettings = () => {
                     checked={formData.card_payment_enabled}
                     onChange={(e) => setFormData({ ...formData, card_payment_enabled: e.target.checked })}
                     className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    data-testid="card-payment-toggle"
                   />
                   <label className="text-sm font-medium text-blue-800">
                     💳 Kredi/Banka Kartı Ödemesini Aktif Et
@@ -190,7 +206,7 @@ const PaymentSettings = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Ödeme Sağlayıcı
                     </label>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-3 gap-3">
                       <button
                         type="button"
                         onClick={() => setFormData({ ...formData, card_payment_provider: 'iyzico' })}
@@ -199,6 +215,7 @@ const PaymentSettings = () => {
                             ? 'border-blue-500 bg-blue-50'
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
+                        data-testid="provider-iyzico"
                       >
                         <span className="font-bold text-lg">iyzico</span>
                         <span className="text-xs text-gray-500">Popüler seçim</span>
@@ -211,25 +228,54 @@ const PaymentSettings = () => {
                             ? 'border-blue-500 bg-blue-50'
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
+                        data-testid="provider-paytr"
                       >
                         <span className="font-bold text-lg">PayTR</span>
                         <span className="text-xs text-gray-500">Türk altyapısı</span>
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, card_payment_provider: 'both' })}
+                        className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${
+                          formData.card_payment_provider === 'both'
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                        data-testid="provider-both"
+                      >
+                        <span className="font-bold text-lg">Her İkisi</span>
+                        <span className="text-xs text-gray-500">Müşteri seçer</span>
+                      </button>
                     </div>
                   </div>
 
-                  {formData.card_payment_provider && (
-                    <>
+                  {/* Iyzico Settings */}
+                  {(formData.card_payment_provider === 'iyzico' || formData.card_payment_provider === 'both') && (
+                    <div className="bg-gray-50 rounded-xl p-6 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-bold text-gray-900">iyzico Ayarları</h3>
+                        <label className="flex items-center space-x-2 text-sm">
+                          <input
+                            type="checkbox"
+                            checked={formData.iyzico_sandbox}
+                            onChange={(e) => setFormData({ ...formData, iyzico_sandbox: e.target.checked })}
+                            className="rounded border-gray-300"
+                          />
+                          <span>Sandbox (Test) Modu</span>
+                        </label>
+                      </div>
+                      
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           API Key *
                         </label>
                         <input
                           type="text"
-                          value={formData.card_api_key}
-                          onChange={(e) => setFormData({ ...formData, card_api_key: e.target.value })}
+                          value={formData.iyzico_api_key}
+                          onChange={(e) => setFormData({ ...formData, iyzico_api_key: e.target.value })}
                           className="w-full h-12 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 px-4 font-mono"
-                          placeholder="API anahtarınız"
+                          placeholder="sandbox-xxxxx veya xxxxx"
+                          data-testid="iyzico-api-key"
                         />
                       </div>
 
@@ -239,43 +285,96 @@ const PaymentSettings = () => {
                         </label>
                         <input
                           type="password"
-                          value={formData.card_secret_key}
-                          onChange={(e) => setFormData({ ...formData, card_secret_key: e.target.value })}
+                          value={formData.iyzico_secret_key}
+                          onChange={(e) => setFormData({ ...formData, iyzico_secret_key: e.target.value })}
                           className="w-full h-12 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 px-4 font-mono"
-                          placeholder="Gizli anahtarınız"
+                          placeholder="Gizli anahtar"
+                          data-testid="iyzico-secret-key"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* PayTR Settings */}
+                  {(formData.card_payment_provider === 'paytr' || formData.card_payment_provider === 'both') && (
+                    <div className="bg-gray-50 rounded-xl p-6 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-bold text-gray-900">PayTR Ayarları</h3>
+                        <label className="flex items-center space-x-2 text-sm">
+                          <input
+                            type="checkbox"
+                            checked={formData.paytr_sandbox}
+                            onChange={(e) => setFormData({ ...formData, paytr_sandbox: e.target.checked })}
+                            className="rounded border-gray-300"
+                          />
+                          <span>Sandbox (Test) Modu</span>
+                        </label>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Merchant ID *
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.paytr_merchant_id}
+                          onChange={(e) => setFormData({ ...formData, paytr_merchant_id: e.target.value })}
+                          className="w-full h-12 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 px-4 font-mono"
+                          placeholder="Mağaza ID"
+                          data-testid="paytr-merchant-id"
                         />
                       </div>
 
-                      {formData.card_payment_provider === 'paytr' && (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Merchant ID
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.card_merchant_id}
-                            onChange={(e) => setFormData({ ...formData, card_merchant_id: e.target.value })}
-                            className="w-full h-12 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 px-4 font-mono"
-                            placeholder="Mağaza ID"
-                          />
-                        </div>
-                      )}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Merchant Key *
+                        </label>
+                        <input
+                          type="password"
+                          value={formData.paytr_merchant_key}
+                          onChange={(e) => setFormData({ ...formData, paytr_merchant_key: e.target.value })}
+                          className="w-full h-12 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 px-4 font-mono"
+                          placeholder="Mağaza anahtarı"
+                          data-testid="paytr-merchant-key"
+                        />
+                      </div>
 
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                        <div className="flex items-start gap-3">
-                          <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
-                          <div className="text-sm text-yellow-800">
-                            <p className="font-medium mb-1">API Entegrasyonu Gerekli</p>
-                            <p>
-                              {formData.card_payment_provider === 'iyzico' 
-                                ? 'iyzico API anahtarlarınızı iyzico.com panelinden alabilirsiniz.'
-                                : 'PayTR API bilgilerinizi paytr.com mağaza panelinizden alabilirsiniz.'
-                              }
-                            </p>
-                          </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Merchant Salt *
+                        </label>
+                        <input
+                          type="password"
+                          value={formData.paytr_merchant_salt}
+                          onChange={(e) => setFormData({ ...formData, paytr_merchant_salt: e.target.value })}
+                          className="w-full h-12 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 px-4 font-mono"
+                          placeholder="Mağaza salt değeri"
+                          data-testid="paytr-merchant-salt"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.card_payment_provider && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                        <div className="text-sm text-yellow-800">
+                          <p className="font-medium mb-1">API Entegrasyonu</p>
+                          <p>
+                            {formData.card_payment_provider === 'iyzico' && 
+                              'iyzico API anahtarlarınızı iyzico.com panelinden alabilirsiniz.'
+                            }
+                            {formData.card_payment_provider === 'paytr' && 
+                              'PayTR API bilgilerinizi paytr.com mağaza panelinizden alabilirsiniz.'
+                            }
+                            {formData.card_payment_provider === 'both' && 
+                              'Her iki sağlayıcı için de API bilgilerinizi ilgili panellerden alabilirsiniz. Müşteri checkout sırasında tercih edebilecek.'
+                            }
+                          </p>
                         </div>
                       </div>
-                    </>
+                    </div>
                   )}
                 </>
               ) : (
@@ -298,6 +397,7 @@ const PaymentSettings = () => {
             className="w-full mt-8 bg-[#78BE20] hover:bg-[#65A318] text-white py-4 rounded-full font-bold flex items-center justify-center space-x-2 transition-all duration-300 hover:scale-105 disabled:opacity-50"
             whileHover={{ scale: loading ? 1 : 1.02 }}
             whileTap={{ scale: loading ? 1 : 0.98 }}
+            data-testid="save-payment-settings"
           >
             <Save className="w-5 h-5" />
             <span>{loading ? 'Kaydediliyor...' : 'Ayarları Kaydet'}</span>
