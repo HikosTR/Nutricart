@@ -16,6 +16,7 @@ import {
   X,
   Layers,
   Star,
+  Users,
 } from 'lucide-react';
 import DashboardHome from './DashboardHome';
 import ProductsManagement from './ProductsManagement';
@@ -26,6 +27,7 @@ import TestimonialsManagement from './TestimonialsManagement';
 import ReviewsManagement from './ReviewsManagement';
 import PaymentSettings from './PaymentSettings';
 import SiteSettings from './SiteSettings';
+import UserManagement from './UserManagement';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -34,16 +36,39 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
     if (!token) {
       navigate('/admin/login');
+      return;
     }
+    
+    // Fetch user role
+    const fetchUserRole = async () => {
+      try {
+        const response = await axios.get(`${API}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUserRole(response.data.role);
+        localStorage.setItem('admin_role', response.data.role);
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+        // Try to get from localStorage as fallback
+        const storedRole = localStorage.getItem('admin_role');
+        if (storedRole) {
+          setUserRole(storedRole);
+        }
+      }
+    };
+    
+    fetchUserRole();
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
+    localStorage.removeItem('admin_role');
     toast.success('Çıkış yapıldı');
     navigate('/admin/login');
   };
@@ -59,6 +84,11 @@ const Dashboard = () => {
     { path: '/admin/payment-settings', icon: CreditCard, label: 'Ödeme Ayarları' },
     { path: '/admin/site-settings', icon: Settings, label: 'Site Ayarları' },
   ];
+
+  // Add User Management only for Yönetici role
+  if (userRole === 'Yönetici') {
+    menuItems.push({ path: '/admin/users', icon: Users, label: 'Kullanıcı Yönetimi' });
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
