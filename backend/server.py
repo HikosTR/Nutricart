@@ -268,10 +268,16 @@ class PaymentSettings(BaseModel):
     bank_name: Optional[str] = None
     # Kredi Kartı ayarları
     card_payment_enabled: bool = False
-    card_payment_provider: Optional[str] = None  # "iyzico" or "paytr"
-    card_api_key: Optional[str] = None
-    card_secret_key: Optional[str] = None
-    card_merchant_id: Optional[str] = None
+    card_payment_provider: Optional[str] = None  # "iyzico" or "paytr" or "both"
+    # Iyzico ayarları
+    iyzico_api_key: Optional[str] = None
+    iyzico_secret_key: Optional[str] = None
+    iyzico_sandbox: bool = True
+    # PayTR ayarları
+    paytr_merchant_id: Optional[str] = None
+    paytr_merchant_key: Optional[str] = None
+    paytr_merchant_salt: Optional[str] = None
+    paytr_sandbox: bool = True
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class PaymentSettingsUpdate(BaseModel):
@@ -280,9 +286,39 @@ class PaymentSettingsUpdate(BaseModel):
     bank_name: Optional[str] = None
     card_payment_enabled: Optional[bool] = None
     card_payment_provider: Optional[str] = None
-    card_api_key: Optional[str] = None
-    card_secret_key: Optional[str] = None
-    card_merchant_id: Optional[str] = None
+    iyzico_api_key: Optional[str] = None
+    iyzico_secret_key: Optional[str] = None
+    iyzico_sandbox: Optional[bool] = None
+    paytr_merchant_id: Optional[str] = None
+    paytr_merchant_key: Optional[str] = None
+    paytr_merchant_salt: Optional[str] = None
+    paytr_sandbox: Optional[bool] = None
+
+# Card Payment Request Models
+class CardPaymentRequest(BaseModel):
+    order_id: str
+    payment_provider: str  # "iyzico" or "paytr"
+    customer_name: str
+    customer_email: EmailStr
+    customer_phone: str
+    customer_address: str
+    total_amount: float
+    items: List[OrderItem]
+    # Card details (only for iyzico direct API)
+    card_holder_name: Optional[str] = None
+    card_number: Optional[str] = None
+    expire_month: Optional[str] = None
+    expire_year: Optional[str] = None
+    cvc: Optional[str] = None
+    installment: int = 1
+
+class CardPaymentResponse(BaseModel):
+    status: str  # "success", "failure", "redirect"
+    payment_id: Optional[str] = None
+    redirect_url: Optional[str] = None
+    iframe_token: Optional[str] = None
+    html_content: Optional[str] = None
+    error_message: Optional[str] = None
 
 class SiteSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
