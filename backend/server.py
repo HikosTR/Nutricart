@@ -249,15 +249,27 @@ class TestimonialUpdate(BaseModel):
 class PaymentSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = "payment_settings"
-    account_holder_name: str
-    iban: str
+    # Havale/EFT ayarları
+    account_holder_name: str = ""
+    iban: str = ""
     bank_name: Optional[str] = None
+    # Kredi Kartı ayarları
+    card_payment_enabled: bool = False
+    card_payment_provider: Optional[str] = None  # "iyzico" or "paytr"
+    card_api_key: Optional[str] = None
+    card_secret_key: Optional[str] = None
+    card_merchant_id: Optional[str] = None
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class PaymentSettingsUpdate(BaseModel):
     account_holder_name: str
     iban: str
     bank_name: Optional[str] = None
+    card_payment_enabled: Optional[bool] = None
+    card_payment_provider: Optional[str] = None
+    card_api_key: Optional[str] = None
+    card_secret_key: Optional[str] = None
+    card_merchant_id: Optional[str] = None
 
 class SiteSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
