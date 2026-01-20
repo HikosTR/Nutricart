@@ -868,7 +868,21 @@ async def get_payment_settings():
 
 @api_router.put("/payment-settings", response_model=PaymentSettings)
 async def update_payment_settings(input: PaymentSettingsUpdate, admin: dict = Depends(get_current_admin)):
-    settings = PaymentSettings(**input.model_dump(), id="payment_settings")
+    # Get current settings to preserve existing values for optional fields
+    current = await db.payment_settings.find_one({"id": "payment_settings"}, {"_id": 0})
+    
+    # Build update data, using current values as defaults for None fields
+    update_data = input.model_dump()
+    
+    # Ensure boolean fields have proper defaults
+    if update_data.get('iyzico_sandbox') is None:
+        update_data['iyzico_sandbox'] = current.get('iyzico_sandbox', True) if current else True
+    if update_data.get('paytr_sandbox') is None:
+        update_data['paytr_sandbox'] = current.get('paytr_sandbox', True) if current else True
+    if update_data.get('card_payment_enabled') is None:
+        update_data['card_payment_enabled'] = current.get('card_payment_enabled', False) if current else False
+    
+    settings = PaymentSettings(**update_data, id="payment_settings")
     doc = settings.model_dump()
     doc['updated_at'] = datetime.now(timezone.utc).isoformat()
     
