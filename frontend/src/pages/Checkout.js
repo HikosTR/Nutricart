@@ -57,11 +57,11 @@ const Checkout = () => {
     if (storedCart) {
       const parsedCart = JSON.parse(storedCart);
       if (parsedCart.length === 0) {
-        navigate('/sepet');
+        navigate('/cart');
       }
       setCart(parsedCart);
     } else {
-      navigate('/sepet');
+      navigate('/cart');
     }
     fetchPaymentSettings();
     fetchCardPaymentStatus();
