@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import axios from 'axios';
@@ -9,10 +10,15 @@ const API = `${BACKEND_URL}/api`;
 const WelcomePopup = () => {
   const [show, setShow] = useState(false);
   const [settings, setSettings] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
+    // Don't show popup on admin pages
+    if (location.pathname.startsWith('/admin')) {
+      return;
+    }
     checkAndShowPopup();
-  }, []);
+  }, [location.pathname]);
 
   const checkAndShowPopup = async () => {
     // Check if user has already seen the popup in this session
