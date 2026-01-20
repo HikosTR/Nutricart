@@ -914,6 +914,348 @@ async def update_site_settings(input: SiteSettingsUpdate, admin: dict = Depends(
         updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
     return updated
 
+# Card Payment Routes
+import hmac
+import hashlib
+import httpx
+import json
+
+def generate_iyzico_auth_header(api_key: str, secret_key: str, request_body: str) -> str:
+    """Generate Iyzico authorization header"""
+    random_key = str(uuid.uuid4())
+    signature_str = f"{random_key}{secret_key}{request_body}"
+    signature = hmac.new(
+        secret_key.encode('utf-8'),
+        signature_str.encode('utf-8'),
+        hashlib.sha256
+    ).digest()
+    signature_hex = signature.hex()
+    auth_str = f"{api_key}:{random_key}:{signature_hex}"
+    encoded_auth = base64.b64encode(auth_str.encode('utf-8')).decode('utf-8')
+    return f"IYZWSv2 {encoded_auth}"
+
+def generate_paytr_hash(merchant_id: str, user_ip: str, merchant_oid: str, email: str, 
+                        payment_amount: int, user_basket: str, no_installment: int, 
+                        max_installment: int, currency: str, test_mode: int,
+                        merchant_key: str, merchant_salt: str) -> str:
+    """Generate PayTR token hash"""
+    hash_str = (
+        merchant_id + user_ip + merchant_oid + email + 
+        str(payment_amount) + user_basket + str(no_installment) + 
+        str(max_installment) + currency + str(test_mode) + merchant_salt
+    )
+    return base64.b64encode(
+        hmac.new(
+            key=merchant_key.encode('utf-8'),
+            msg=hash_str.encode('utf-8'),
+            digestmod=hashlib.sha256
+        ).digest()
+    ).decode('utf-8')
+
+@api_router.get("/card-payment/status")
+async def get_card_payment_status():
+    """Get card payment availability status for checkout"""
+    settings = await db.payment_settings.find_one({"id": "payment_settings"}, {"_id": 0})
+    if not settings:
+        return {
+            "card_payment_enabled": False,
+            "available_providers": []
+        }
+    
+    available_providers = []
+    provider = settings.get('card_payment_provider', '')
+    
+    if settings.get('card_payment_enabled'):
+        if provider in ['iyzico', 'both'] and settings.get('iyzico_api_key') and settings.get('iyzico_secret_key'):
+            available_providers.append('iyzico')
+        if provider in ['paytr', 'both'] and settings.get('paytr_merchant_id') and settings.get('paytr_merchant_key'):
+            available_providers.append('paytr')
+    
+    return {
+        "card_payment_enabled": settings.get('card_payment_enabled', False) and len(available_providers) > 0,
+        "available_providers": available_providers
+    }
+
+@api_router.post("/card-payment/init-iyzico")
+async def init_iyzico_payment(request: CardPaymentRequest):
+    """Initialize Iyzico 3DS payment"""
+    settings = await db.payment_settings.find_one({"id": "payment_settings"}, {"_id": 0})
+    
+    if not settings or not settings.get('card_payment_enabled'):
+        raise HTTPException(status_code=400, detail="Kredi kartı ödemesi aktif değil")
+    
+    api_key = settings.get('iyzico_api_key')
+    secret_key = settings.get('iyzico_secret_key')
+    is_sandbox = settings.get('iyzico_sandbox', True)
+    
+    if not api_key or not secret_key:
+        raise HTTPException(status_code=400, detail="Iyzico API bilgileri eksik")
+    
+    base_url = "https://sandbox-api.iyzipay.com" if is_sandbox else "https://api.iyzipay.com"
+    callback_url = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001') + "/api/card-payment/iyzico-callback"
+    
+    # Prepare basket items
+    basket_items = []
+    for item in request.items:
+        basket_items.append({
+            "id": item.product_id,
+            "name": item.product_name,
+            "category1": "Ürün",
+            "itemType": "PHYSICAL",
+            "price": str(item.price * item.quantity)
+        })
+    
+    # Prepare request payload
+    payload = {
+        "locale": "tr",
+        "conversationId": request.order_id,
+        "price": str(request.total_amount),
+        "paidPrice": str(request.total_amount),
+        "currency": "TRY",
+        "installment": request.installment,
+        "basketId": request.order_id,
+        "paymentChannel": "WEB",
+        "paymentGroup": "PRODUCT",
+        "callbackUrl": callback_url,
+        "paymentCard": {
+            "cardHolderName": request.card_holder_name,
+            "cardNumber": request.card_number,
+            "expireMonth": request.expire_month,
+            "expireYear": request.expire_year,
+            "cvc": request.cvc,
+            "registerCard": "0"
+        },
+        "buyer": {
+            "id": str(hash(request.customer_email)),
+            "name": request.customer_name.split()[0] if ' ' in request.customer_name else request.customer_name,
+            "surname": request.customer_name.split()[-1] if ' ' in request.customer_name else "",
+            "gsmNumber": request.customer_phone,
+            "email": request.customer_email,
+            "identityNumber": "11111111111",
+            "registrationAddress": request.customer_address,
+            "ip": "127.0.0.1",
+            "city": "Istanbul",
+            "country": "Turkey",
+            "zipCode": "34000"
+        },
+        "shippingAddress": {
+            "contactName": request.customer_name,
+            "city": "Istanbul",
+            "country": "Turkey",
+            "address": request.customer_address,
+            "zipCode": "34000"
+        },
+        "billingAddress": {
+            "contactName": request.customer_name,
+            "city": "Istanbul",
+            "country": "Turkey",
+            "address": request.customer_address,
+            "zipCode": "34000"
+        },
+        "basketItems": basket_items
+    }
+    
+    try:
+        request_body = json.dumps(payload)
+        auth_header = generate_iyzico_auth_header(api_key, secret_key, request_body)
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{base_url}/payment/3dsecure/initialize",
+                content=request_body,
+                headers={
+                    "Authorization": auth_header,
+                    "Content-Type": "application/json"
+                },
+                timeout=30.0
+            )
+            result = response.json()
+        
+        if result.get('status') == 'success':
+            # Store pending payment in DB
+            await db.pending_payments.insert_one({
+                "order_id": request.order_id,
+                "provider": "iyzico",
+                "payment_id": result.get('paymentId'),
+                "amount": request.total_amount,
+                "customer_email": request.customer_email,
+                "status": "pending",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            })
+            
+            return CardPaymentResponse(
+                status="redirect",
+                payment_id=result.get('paymentId'),
+                html_content=result.get('threeDSHtmlContent')
+            )
+        else:
+            return CardPaymentResponse(
+                status="failure",
+                error_message=result.get('errorMessage', 'Ödeme başlatılamadı')
+            )
+    except Exception as e:
+        logger.error(f"Iyzico payment error: {str(e)}")
+        return CardPaymentResponse(
+            status="failure",
+            error_message=f"Ödeme hatası: {str(e)}"
+        )
+
+@api_router.post("/card-payment/init-paytr")
+async def init_paytr_payment(request: CardPaymentRequest):
+    """Initialize PayTR iframe payment"""
+    settings = await db.payment_settings.find_one({"id": "payment_settings"}, {"_id": 0})
+    
+    if not settings or not settings.get('card_payment_enabled'):
+        raise HTTPException(status_code=400, detail="Kredi kartı ödemesi aktif değil")
+    
+    merchant_id = settings.get('paytr_merchant_id')
+    merchant_key = settings.get('paytr_merchant_key')
+    merchant_salt = settings.get('paytr_merchant_salt')
+    is_sandbox = settings.get('paytr_sandbox', True)
+    
+    if not merchant_id or not merchant_key or not merchant_salt:
+        raise HTTPException(status_code=400, detail="PayTR API bilgileri eksik")
+    
+    base_url = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001')
+    
+    # Prepare basket items for PayTR
+    basket_items = []
+    for item in request.items:
+        basket_items.append([
+            item.product_name,
+            str(item.price),
+            str(item.quantity)
+        ])
+    user_basket = base64.b64encode(json.dumps(basket_items).encode('utf-8')).decode('utf-8')
+    
+    # Amount in cents
+    payment_amount = int(request.total_amount * 100)
+    
+    # Generate token hash
+    token_hash = generate_paytr_hash(
+        merchant_id=merchant_id,
+        user_ip="127.0.0.1",
+        merchant_oid=request.order_id,
+        email=request.customer_email,
+        payment_amount=payment_amount,
+        user_basket=user_basket,
+        no_installment=0,
+        max_installment=0,
+        currency="TL",
+        test_mode=1 if is_sandbox else 0,
+        merchant_key=merchant_key,
+        merchant_salt=merchant_salt
+    )
+    
+    payload = {
+        'merchant_id': merchant_id,
+        'user_ip': "127.0.0.1",
+        'merchant_oid': request.order_id,
+        'email': request.customer_email,
+        'payment_amount': payment_amount,
+        'paytr_token': token_hash,
+        'user_basket': user_basket,
+        'debug_on': 1 if is_sandbox else 0,
+        'no_installment': 0,
+        'max_installment': 0,
+        'user_name': request.customer_name,
+        'user_address': request.customer_address,
+        'user_phone': request.customer_phone,
+        'merchant_ok_url': f"{base_url}/api/card-payment/paytr-success",
+        'merchant_fail_url': f"{base_url}/api/card-payment/paytr-fail",
+        'timeout_limit': 30,
+        'currency': 'TL',
+        'test_mode': 1 if is_sandbox else 0
+    }
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://www.paytr.com/odeme/api/get-token",
+                data=payload,
+                timeout=30.0
+            )
+            result = response.json()
+        
+        if result.get('status') == 'success':
+            # Store pending payment in DB
+            await db.pending_payments.insert_one({
+                "order_id": request.order_id,
+                "provider": "paytr",
+                "token": result.get('token'),
+                "amount": request.total_amount,
+                "customer_email": request.customer_email,
+                "status": "pending",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            })
+            
+            return CardPaymentResponse(
+                status="redirect",
+                iframe_token=result.get('token'),
+                redirect_url=f"https://www.paytr.com/odeme/guvenli/{result.get('token')}"
+            )
+        else:
+            return CardPaymentResponse(
+                status="failure",
+                error_message=result.get('reason', 'Ödeme başlatılamadı')
+            )
+    except Exception as e:
+        logger.error(f"PayTR payment error: {str(e)}")
+        return CardPaymentResponse(
+            status="failure",
+            error_message=f"Ödeme hatası: {str(e)}"
+        )
+
+@api_router.post("/card-payment/iyzico-callback")
+async def iyzico_callback(request: dict):
+    """Handle Iyzico 3DS callback"""
+    try:
+        payment_id = request.get('paymentId')
+        status = request.get('status')
+        
+        if status == 'success':
+            # Update pending payment
+            await db.pending_payments.update_one(
+                {"payment_id": payment_id},
+                {"$set": {"status": "success", "updated_at": datetime.now(timezone.utc).isoformat()}}
+            )
+            return {"status": "success"}
+        else:
+            await db.pending_payments.update_one(
+                {"payment_id": payment_id},
+                {"$set": {"status": "failed", "updated_at": datetime.now(timezone.utc).isoformat()}}
+            )
+            return {"status": "failed"}
+    except Exception as e:
+        logger.error(f"Iyzico callback error: {str(e)}")
+        return {"status": "error"}
+
+@api_router.post("/card-payment/paytr-callback")
+async def paytr_callback(request: dict):
+    """Handle PayTR callback"""
+    try:
+        merchant_oid = request.get('merchant_oid')
+        status = request.get('status')
+        
+        new_status = "success" if status == "success" else "failed"
+        await db.pending_payments.update_one(
+            {"order_id": merchant_oid},
+            {"$set": {"status": new_status, "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        return "OK"
+    except Exception as e:
+        logger.error(f"PayTR callback error: {str(e)}")
+        return "OK"
+
+@api_router.get("/card-payment/check/{order_id}")
+async def check_payment_status(order_id: str):
+    """Check payment status for an order"""
+    payment = await db.pending_payments.find_one({"order_id": order_id}, {"_id": 0})
+    if not payment:
+        return {"status": "not_found"}
+    return {"status": payment.get('status', 'pending')}
+
 # File Upload Route
 @api_router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
