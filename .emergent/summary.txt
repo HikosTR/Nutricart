@@ -1,62 +1,92 @@
 <analysis>**original_problem_statement:**
-The user requested the creation of a modern, mobile-friendly e-commerce website for selling Herbalife products, using a white, green, and black color palette.
+The user requested the creation of a modern, mobile-friendly e-commerce website for Herbalife products, using a white, green, and black color palette. Over the course of development, the user has added numerous features, transforming the initial request into a comprehensive e-commerce platform.
 
 **PRODUCT REQUIREMENTS:**
-- **Homepage:** Features a YouTube video slider, a campaign banner, and a section for Products and Packages with spotlight-style product cards that include an image, description, price, and an Add to Cart button.
-- **Core E-commerce Flow:** Includes a shopping cart page (for adding/removing items and adjusting quantities) and a checkout process.
-- **Payment:** The payment method is Bank Transfer/EFT. The site owner's IBAN and account name are managed from an admin panel and displayed to the customer at checkout.
-- **Proof of Payment:** Customers must upload proof of payment (a receipt in image or PDF format) to complete an order.
-- **Product Variants:** Products can have multiple variants (e.g., flavors), each with its own image and stock status. Users should be able to select a variant, and the product image should update accordingly. When a variant is out of stock, it should not be purchasable.
-- **Admin Panel:** A comprehensive admin panel is required to manage: products (and their variants, including stock status), video slider URLs, campaign banners, customer testimonials, site logo, IBAN/payment information, a top announcement bar, and footer content.
-- **Order Management:** Orders should generate a short, unique code (e.g., HRB-XXXXXX). A public Order Tracking page should allow customers to check their order status using this code. Admins must be able to see the order code and view the uploaded payment receipt for each order.
-- **Cart Behavior:** Different product variants should appear as separate line items in the cart and order details.
-- **UI/UX:** The site should have a dynamic and interactive design, with a fixed WhatsApp button for orders and an Instagram icon. The YouTube video slider should autoplay. If all variants of a product are out of stock, the product should be marked as Sold Out on the main page.
+- **Core E-commerce:** A full product browsing, cart, and checkout flow.
+- **Payment Methods:** The system must support two payment methods:
+    1.  **Bank Transfer/EFT:** The site owner's IBAN is managed from an admin panel. Customers must upload proof of payment to complete an order.
+    2.  **Credit/Bank Card:** Integration with a payment gateway like Iyzico or PayTR. This can be enabled/disabled from the admin panel. If disabled, a message should inform the user.
+- **Product Management:**
+    - Products can have multiple variants (e.g., flavors), each with its own image and stock status.
+    - Admin-defined display order for products on the homepage.
+    - A Campaign feature to add a promotional badge to product images.
+- **Content Management (Admin Panel):**
+    - **Homepage Slider:** Manage a slider that supports both YouTube videos and uploaded images.
+    - **Blog System:** A section to create, edit, and publish blog-style posts (evolved from a simple banner feature).
+    - **Welcome Popup:** A customizable entry modal (text, image, enabled/disabled) that appears when users visit the site.
+    - **Site Settings:** Manage the site logo, top announcement bar, footer content, and legal pages.
+    - **Product Reviews:** An admin section to approve or delete customer-submitted product reviews.
+- **Order Management:**
+    - An admin dashboard with search, pagination (15 per page), and the ability to delete orders.
+    - A dashboard to view total revenue, filterable by a date range.
+- **User Management (Admin Roles):**
+    - A two-tiered user system:
+        - **Yönetici (Super Admin):** Can manage other admins (add/delete, change passwords).
+        - **Admin:** Standard privileges, cannot manage other users.
+- **Customer-Facing Features:**
+    - A public order tracking page using a short, unique order code (e.g., HRB-XXXXXX).
+    - Customer-side product sorting (e.g., by price).
+    - A product reviews section on product pages, allowing customers to submit text and images.
+    - Legal pages (Return Policy, Sales Contract, Privacy/KVKK, Company Info) accessible from the footer.
+    - A prominent WhatsApp contact button in the navigation bar.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-A full-stack application with a FastAPI backend and a React frontend has been developed. The application includes a complete e-commerce flow from product browsing to checkout with payment receipt upload. A comprehensive admin panel exists for managing all dynamic content, including products, variants, orders, site settings (logo, top bar, footer), and payment details. Key features like product variants, a custom order tracking page, and short order codes are implemented.
+A full-stack e-commerce application built with FastAPI and React. The application has a comprehensive admin panel and implements most of the user's requirements, including product management with variants, a blog system, a welcome popup, dynamic site settings, order management with search and date filters, and a complete product review system.
 
 **Last working item**:
-    - Last item agent was working: The agent was in the middle of implementing a multi-part feature request: a manageable top announcement bar, a dynamic footer, and an out of stock system for product variants. The last action was editing frontend files to add a toggle in the admin panel for a variant's availability and disable the selection of unavailable variants on the product detail page.
+    - Last item agent was working: The agent began implementing two major, concurrent features requested by the user:
+        1.  **Dual Payment System:** Adding a Credit/Bank Card option alongside the existing Bank Transfer/EFT method at checkout.
+        2.  **Admin User Roles:** Creating a tiered system with a Yönetici (Super Admin) and standard Admin roles.
+        The agent had just started by modifying backend models and the frontend admin pages for these features.
     - Status: IN PROGRESS
     - Agent Testing Done: N
     - Which testing method agent to use? both
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-There are no known bugs or issues. The current focus is on completing a new feature implementation.
+There are no known bugs. The focus is on completing the new features.
 
 **In progress Task List**:
-  - Task 1: Complete Top Bar, Footer, and Out of Stock Feature Implementation (P0)
-     - Where to resume: The agent has edited numerous backend and frontend files to add the required models and UI elements. The next steps are:
-        1. Verify all necessary code changes for the feature are complete.
-        2. Restart the backend and frontend services to apply all changes.
-        3. Thoroughly test the new functionalities:
-            - Update the top bar and footer text from the admin panel and see it reflected on the frontend.
-            - Mark a product variant as out of stock in the admin panel.
-            - Verify the out of stock variant is disabled on the product detail page.
-            - Verify that if all variants are out of stock, the product shows a Sold Out badge on the homepage.
-     - What will be achieved with this? This will deliver the user's latest request, making the site's promotional content (top bar, footer) and stock levels fully manageable from the admin panel.
+  - Task 1: Implement Dual Payment System & Admin Roles (P0)
+     - Where to resume:
+        1.  **Backend ():**
+            - Finalize the  model to include a  field ('Yönetici' or 'Admin').
+            - Implement API endpoints for user management () with role-based access control. A 'Yönetici' should be able to create/update/delete 'Admin' users.
+        2.  **Frontend (Admin Panel):**
+            - Create a new page  for 'Yönetici' users to manage other admins.
+            - Update the admin sidebar in  to only show the User Management link to the 'Yönetici'.
+            - The  page has been updated for credit card toggles; verify its connection to the backend.
+        3.  **Frontend (Checkout):**
+            - Modify  to display two payment options: Havale/EFT and Kredi Kartı.
+            - If Kredi Kartı is selected, and it's enabled in the backend, proceed with the payment gateway flow. Otherwise, display a message like Kredi/Banka kartı ödemesi şu anda mevcut değildir.
+        4.  **Integration:**
+            - **Crucially**, call the  subagent to get the implementation plan for **Iyzico** or **PayTR** before writing any integration code.
+     - What will be achieved with this? The site will have a more flexible payment system and a secure, role-based admin management structure.
      - Status:  IN PROGRESS
      - Should Test frontend/backend/both after fix? both
-     - Blocked on something: No.
+     - Blocked on something: Needs playbook from  for credit card integration.
 
 **Upcoming and Future Tasks**
-There are no other pending tasks. The main goal is to complete the current in-progress task and deliver a fully functional website.
+These are features suggested by the agent during previous interactions that the user has not yet requested:
+-   **Reporting:** Add an export to CSV/Excel feature for orders in the admin panel.
+-   **Dashboard Analytics:** Add a revenue graph or a best-selling products widget to the admin dashboard.
+-   **Sales Promotions:** Add a strikethrough price field for campaign products to show discounts more clearly.
+-   **Blog Engagement:** Add a commenting system or social media sharing buttons to blog posts.
 
 **Completed work in this session**
-- **Full-stack Application:** Built from scratch with a FastAPI backend and React frontend.
-- **Admin Panel & Auth:** Created a secure admin section for site management.
-- **Dynamic Content:** Implemented management for products, videos, banners, testimonials, logo, and payment info.
-- **Product Variants:** Added functionality for product variations with unique images and stock status (, , ).
-- **Payment Flow:** Implemented checkout with admin-managed IBAN details and a required proof-of-payment file upload (, ).
-- **Order Tracking System:** Created a public page for users to track orders using a short, unique order code () (, ).
-- **Cart Logic:** Ensured different product variants are treated as individual items in the cart and subsequent orders.
-- **Bug Fixes:** Resolved issues identified by the testing agent, including backend status codes and cart state persistence.
+-   **Top Bar Layout Fix:** Corrected the z-index and positioning so the top announcement bar correctly displays above the main navigation menu.
+-   **Enhanced Slider Management:** Upgraded the homepage slider to support both YouTube videos and direct image uploads from the admin's computer.
+-   **Product Sorting & Campaigns:** Implemented admin-defined product display order, a campaign badge feature, and customer-facing price sorting.
+-   **Blog and Legal Content System:** Converted the banner feature into a full blog system with a rich text editor and detail pages. Added a system to manage and display legal pages (Returns, KVKK, etc.) in the footer.
+-   **UI/UX Improvements:** Added a WhatsApp button to the navbar and the site logo to the footer, both managed from the admin panel.
+-   **Advanced Order Management:** Added pagination, a comprehensive search filter (by name, date, order code), and an order deletion feature to the admin panel.
+-   **Dashboard Filtering:** Implemented a date-range filter on the admin dashboard to analyze revenue and orders for specific periods.
+-   **Welcome Popup & Product Reviews:** Added a customizable welcome popup and a full-featured product review system, allowing customers to submit text and images, with an approval workflow in the admin panel.
 
 **Earlier issues found/mentioned but not fixed**
-   - None. The agent has addressed all identified issues and user requests up to this point.
+   - None.
 
 **Known issue recurrence from previous fork**
   - None.
@@ -65,69 +95,80 @@ There are no other pending tasks. The main goal is to complete the current in-pr
 
 
 **Key Technical Concepts**
-- **Frontend:** React, Tailwind CSS,  for animations,  for API requests.
-- **Backend:** FastAPI, Motor (async MongoDB driver), Pydantic for data validation, JWT for admin authentication.
-- **Database:** MongoDB.
+-   **Frontend:** React, Tailwind CSS, , , ,  (rich text editor), .
+-   **Backend:** FastAPI, Motor (async MongoDB driver), Pydantic, JWT authentication.
+-   **Database:** MongoDB.
 
 **key DB schema**
-  - **products:** 
-  - **orders:** 
-  - **settings:** A single collection storing different setting types like  (logo, top bar, footer) and  (IBAN info).
+-   **admins:**  (In progress)
+-   **products:** 
+-   **orders:** 
+-   **reviews:** 
+-   **slides:** 
+-   **settings:** A single collection for storing different configuration documents (, , , ).
 
 **changes in tech stack**
-  - No major changes to the core stack.  was added for UI animations.
+-    was added for the blog's rich text editor.
+-    was added for the dashboard's date filter.
 
 **All files of reference**
-- : The single source of truth for all backend logic, including API endpoints, database models, and business logic for all features.
-- : Recently created/modified to manage the new top bar, footer, and logo settings.
-- : Modified to support adding/editing variants and toggling their availability.
-- : Modified to handle variant selection, image switching, and disabling out-of-stock options.
-- : Modified to display the new  and fetch/display the dynamic footer.
-- : Newly created component for the announcement bar.
+-   : The core backend file, recently modified for payment settings and planned modifications for user roles.
+-   : Overwritten to add UI for enabling/disabling credit card payments.
+-   : To be modified for the dual payment options.
+-   : Recently updated with date filtering logic.
+-   : Recently updated with pagination, search, and delete functionality.
+-   : Recently updated to manage the popup, legal pages, and company info.
+-   : Recently updated to include the product reviews section.
 
 **Areas that need refactoring**:
-- The  file has become a monolith containing all API routes, database models, and logic. It should be broken down into a more structured application with separate files/modules for routes, models, and services to improve maintainability.
+-   The  file is a monolith and has grown very large. It is becoming difficult to maintain and should be broken down into a more structured application (e.g., separate modules for routes, models, and services).
 
 **key api endpoints**
-- : Manages site-wide settings like the logo, top bar text, and footer content.
-- : Updated to handle modifications to product variants, including the  status.
-- : Handles file uploads for payment receipts and the site logo.
-- : Retrieves order status based on the short, unique order code.
+-   : Deletes an order.
+-   : Fetches reviews for a product.
+-   : Submits a new review.
+-   : Approves a review.
+-   : Deletes a review.
+-   **Upcoming:** Endpoints for admin user management ().
 
 **Critical Info for New Agent**
-The user is highly engaged and provides frequent, detailed feature requests. The current task is a multi-part feature implementation that is mid-way through. You must complete this work by restarting services and testing thoroughly. The backend code in  is very large; be mindful of this when making changes. The application relies on serving static files from  for logos and payment receipts.
+-   The immediate priority is to complete the **Dual Payment System** and **Admin Roles** features.
+-   For the credit card integration (Iyzico/PayTR), you **must** call the  subagent before writing any implementation code. Do not proceed without its playbook.
+-   The user is highly engaged and often requests multiple complex features at once. Plan your work carefully and get user confirmation on your plan.
+-   The backend monolith in  is a risk. Be extra cautious when making changes to it.
 
 **documents and test reports created in this job**
-  - 
-  - 
+-   
+-   
 
-**Last 10 User Messages and any pending HUMAN messages** 
-1. **User Request (Pending):** Add a top announcement bar (green with black text), a manageable footer, and an out of stock feature for variants. If a variant is out of stock, users shouldn't be able to buy it. If all variants of a product are out of stock, the product should be marked Sold Out on the homepage.
-2. **User Request (Completed):** For product variants, each variant should have its own image.
-3. **User Request (Completed):** When adding different variants of a product to the cart, they should appear as separate items, not just an increase in quantity of the parent product.
-4. **User Request (Completed):** The order number is too long. It should be a short, 10-digit unique code like HRB-XXXXXX, which the customer can use to track their order.
-5. **User Request (Completed):** The payment section should not ask for the customer's IBAN. Instead, it should display the site owner's IBAN (managed from the admin panel) and require the customer to upload a payment receipt.
-6. **User Request (Completed):** The site logo should be manageable from the admin panel.
-7. **User Request (Completed):** The YouTube video slider on the homepage should autoplay when the site loads.
-8. **User Response:** Confirmed that the compiled with problems error should be fixed.
-9. **User Request (Completed):** Add an order tracking page where a user can enter their order code to see the status.
-10. **Initial Feedback:** User requested an admin panel for all dynamic content and a more interactive and animated site design.
+**Last 10 User Messages and any pending HUMAN messages**
+1.  **[PENDING] User:** Request for Credit Card (Iyzico/PayTR) and EFT payment options at checkout.
+2.  **[PENDING] User:** Request for a two-tier admin role system (Yönetici and Admin).
+3.  **[Done] User:** Request for a welcome popup modal, legal pages in the footer, and a product review system.
+4.  **[Done] User:** Request to delete orders and filter the dashboard by date range.
+5.  **[Done] User:** Request for pagination and search features in the admin order list.
+6.  **[Done] User:** Request to convert banners into a blog, add a WhatsApp button to the menu, and the site logo to the footer.
+7.  **[Done] User:** Request for admin-defined product sorting, a campaign badge feature, and customer-side price sorting.
+8.  **[Done] User:** Request to upload slider images directly from a PC.
+9.  **[Done] User:** Request to allow images in the homepage slider in addition to videos.
+10. **[Resolved] User:** Reported that the top announcement bar was not visible.
 
 **Project Health Check:**
-- **Broken:** The application is likely in a non-functional state because the last set of changes for the Top Bar, Footer, and Out of Stock feature has been applied to files but not tested. Services need a restart and a full test cycle.
-- **Mocked:** None.
+-   **Broken**: No. The currently deployed features are functional.
+-   **Mocked**: None.
 
 **3rd Party Integrations**
-- None.
+-   **Planned:** Iyzico or PayTR for credit card processing. The next agent must use the  to get an implementation plan.
 
 **Testing status**
-  - Testing agent used after significant changes: YES (once, earlier in the project)
-  - Troubleshoot agent used after agent stuck in loop: NO
-  - Test files created: []
-  - Known regressions: None are known, but the application is at high risk of regression due to the large, untested changes made in the last step.
+-   Testing agent used after significant changes: Yes, an API test suite was created earlier.
+-   Troubleshoot agent used after agent stuck in loop: No
+-   Test files created: [, ]
+-   Known regressions: None.
 
 **Credentials to test flow:**
-Admin credentials were not explicitly saved. The default credentials used in setup scripts are typically  / . If this fails, the agent will need to re-run the admin creation logic.
+-   Admin credentials:  / 
 
 **What agent forgot to execute**
-The agent has not restarted the services or performed any testing after making a large number of edits across the backend and frontend to implement the latest feature request. Completing the implementation cycle (code -> restart -> test) is the immediate priority.</analysis>
+-   The agent started working on two large features (payment options and user roles) simultaneously without a clear, sequential plan.
+-   The agent has not yet called the mandatory  for the credit card integration, which is a critical next step.</analysis>
