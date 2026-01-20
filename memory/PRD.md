@@ -1,65 +1,112 @@
-# Herbalife E-Ticaret Sitesi - PRD
+# Herbalife E-Commerce Platform - PRD
 
-## Orijinal Problem Tanımı
-Modern, mobil uyumlu, beyaz-yeşil-siyah renk temalı Herbalife ürünleri e-ticaret sitesi.
+## Problem Statement
+Modern, mobile-friendly e-commerce website for Herbalife products with white, green, and black color palette.
 
-## Temel Gereksinimler
+## Core Features (Implemented)
 
-### Ana Sayfa
-- ✅ Slider (Video veya Resim) - admin panelden yönetiliyor, PC'den resim yükleme
-- ✅ **Banner / Blog Sistemi** - Banner'lara tıklandığında blog sayfası açılabilir
-- ✅ Ürün kartları (spotlight stil)
-- ✅ Üst duyuru çubuğu (TopBar)
-- ✅ Dinamik footer (logo dahil)
-- ✅ Ürün sıralama seçenekleri
-- ✅ **WhatsApp butonu menüde** (numara ile birlikte)
+### E-Commerce Core ✅
+- Product browsing with categories
+- Product variants (flavors) with individual images/stock
+- Shopping cart functionality
+- Order management with unique order codes (HRB-XXXXXX)
+- Order tracking page
 
-### Blog Sistemi
-- ✅ Banner'lar blog olarak kullanılabilir
-- ✅ Blog içeriği yazma alanı
-- ✅ Blog galeri görselleri
-- ✅ Tıklandığında blog detay sayfası açılır
-- ✅ "Devamını Oku" linki
+### Payment System ✅
+- **Havale/EFT**: Admin-managed IBAN, customers upload payment proof
+- **Credit/Bank Card (NEW)**: 
+  - iyzico integration (form ready, API mocked)
+  - PayTR integration (form ready, API mocked)
+  - Admin can enable/disable and choose provider(s)
+  - Customers choose payment method at checkout
 
-### E-Ticaret Akışı
-- ✅ Ürün detay sayfası (varyant seçimi, resim değişimi)
-- ✅ Sepet sayfası
-- ✅ Ödeme sayfası (Havale/EFT)
-- ✅ Sipariş takip sayfası (HRB-XXXXXX kodu)
+### Admin Panel ✅
+- **Dashboard**: Revenue overview, date range filters
+- **Products**: CRUD, variants, display order, campaign badges
+- **Orders**: Pagination (15/page), search, delete, status management
+- **Slider**: YouTube videos + uploaded images
+- **Blog/Banners**: Rich text editor, detail pages
+- **Testimonials**: Customer reviews on homepage
+- **Product Reviews**: Customer reviews with images, approval workflow
+- **Payment Settings**: Bank info + Iyzico/PayTR configuration
+- **Site Settings**: Logo, top bar, footer, popup, legal pages
+- **User Management (NEW)**: Role-based admin management
 
-### Ürün Özellikleri
-- ✅ Ürün varyantları (kendi resimleri)
-- ✅ Stok durumu (is_available)
-- ✅ "TÜKENDİ" rozeti
-- ✅ Sıralama numarası (display_order)
-- ✅ Kampanya rozeti
+### Admin Role System (NEW) ✅
+- **Yönetici (Super Admin)**: Full access, can manage other admins
+- **Admin**: Standard privileges, cannot access user management
 
-### Admin Paneli
-- ✅ Ürün yönetimi
-- ✅ **Banner / Blog Yönetimi** - Blog içeriği yazma, galeri
-- ✅ Slider Yönetimi (Video/Resim)
-- ✅ Site Ayarları (Logo, WhatsApp, TopBar, Footer)
-- ✅ Sipariş yönetimi
+### Customer Features ✅
+- Product sorting (price)
+- Product reviews with images
+- Order tracking with order code
+- WhatsApp contact button
+- Legal pages in footer
+- Welcome popup (customizable)
 
-### Site Ayarları
-- ✅ Logo (menü ve footer'da aynı)
-- ✅ **WhatsApp numarası** (menüde görünür)
-- ✅ TopBar mesajı
-- ✅ Footer içeriği
+## Technical Stack
+- **Frontend**: React, Tailwind CSS, Framer Motion, React Quill
+- **Backend**: FastAPI, Motor (MongoDB async), JWT Auth
+- **Database**: MongoDB
 
-## Teknik Mimari
-- **Backend:** FastAPI, MongoDB, JWT
-- **Frontend:** React, Tailwind CSS, Framer Motion
+## API Endpoints
 
-## Tamamlanan İşler (19 Ocak 2026)
-1. ✅ Banner'ları blog olarak kullanma özelliği
-2. ✅ Blog detay sayfası (/blog/:id)
-3. ✅ Menüde WhatsApp butonu + numara
-4. ✅ Footer'da logo (menüdeki ile aynı)
-5. ✅ Admin panelde WhatsApp numarası ayarı
+### Auth
+- `POST /api/auth/login` - Returns token + role
+- `POST /api/auth/register` - Register new admin
+- `GET /api/auth/me` - Current user info with role
 
-## Test Bilgileri
-- Admin: admin@herbalife.com / admin123
+### Admin Management (Yönetici only)
+- `GET /api/admins` - List all admins
+- `POST /api/admins` - Create admin
+- `PUT /api/admins/{id}` - Update admin
+- `DELETE /api/admins/{id}` - Delete admin
 
-## Kalan Görevler
-- Şu an bekleyen görev yok
+### Card Payment
+- `GET /api/card-payment/status` - Check if card payment is enabled
+- `POST /api/card-payment/init-iyzico` - Initialize iyzico payment
+- `POST /api/card-payment/init-paytr` - Initialize PayTR payment
+- Callback endpoints for payment verification
+
+## Test Credentials
+- **Super Admin**: admin@herbalife.com / admin123 (role: Yönetici)
+- **Standard Admin**: standard_admin@herbalife.com / admin123 (role: Admin)
+
+## What's MOCKED
+- **Iyzico**: Form and settings ready, actual payment processing not configured
+- **PayTR**: Form and settings ready, actual payment processing not configured
+- Both require real API keys from the respective payment providers to work
+
+## Database Schema Updates
+```
+admins: { id, email, password_hash, role: "Yönetici"|"Admin", created_at }
+payment_settings: { 
+  ..., 
+  card_payment_enabled, 
+  card_payment_provider: "iyzico"|"paytr"|"both",
+  iyzico_api_key, iyzico_secret_key, iyzico_sandbox,
+  paytr_merchant_id, paytr_merchant_key, paytr_merchant_salt, paytr_sandbox
+}
+pending_payments: { order_id, provider, payment_id/token, amount, status, customer_email }
+```
+
+## Completed This Session
+1. ✅ Dual Payment System (Havale/EFT + Credit Card)
+2. ✅ Admin Role Management (Yönetici/Admin)
+3. ✅ iyzico integration structure
+4. ✅ PayTR integration structure
+5. ✅ User Management page
+6. ✅ Role-based menu visibility
+7. ✅ All tests passing (18/18)
+
+## Backlog / Future Tasks
+- [ ] Export orders to CSV/Excel
+- [ ] Dashboard revenue graph
+- [ ] Strikethrough price for campaigns
+- [ ] Blog commenting system
+- [ ] Social media sharing for blog posts
+- [ ] Stock management alerts
+- [ ] Email notifications for orders
+
+---
+Last Updated: January 20, 2026
